@@ -1,0 +1,120 @@
+[gd_scene load_steps=11 format=3 uid="uid://3716brh3f04n"]
+
+[ext_resource type="PackedScene" uid="uid://cyb2l1vcms8n0" path="res://addons/Godot-OpenXR-Startup/OpenXR Startup/CameraRig.tscn" id="1_o26st"]
+[ext_resource type="PackedScene" uid="uid://c8ccdoo0nk1uy" path="res://addons/Godot-VR-Body-Solver/Scenes/SkeletalAvatar.tscn" id="2_0fogy"]
+[ext_resource type="PackedScene" uid="uid://bo3f3lg1xqgqb" path="res://addons/Godot-VR-Body-Solver/Scenes/PreparedBodySolver.tscn" id="3_gfmwf"]
+[ext_resource type="Script" path="res://addons/Newton/Scripts/CoreRB.cs" id="4_jlr6y"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_lmjnj"]
+radius = 0.25
+
+[sub_resource type="SphereMesh" id="SphereMesh_jj4w0"]
+radius = 0.25
+height = 0.5
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gp6i1"]
+size = Vector3(0.32, 0.5, 0.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_8hf0b"]
+size = Vector3(0.32, 0.5, 0.2)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_oq1ph"]
+radius = 0.08
+height = 0.27
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_vcfel"]
+radius = 0.08
+height = 0.27
+
+[node name="NewtonPlayer" type="Node"]
+
+[node name="CameraRig" parent="." instance=ExtResource("1_o26st")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+
+[node name="Camera" parent="CameraRig" index="0"]
+near = 0.026
+
+[node name="SkeletalAvatar" parent="CameraRig" node_paths=PackedStringArray("Solver") instance=ExtResource("2_0fogy")]
+Solver = NodePath("../../BodySolver")
+
+[node name="Axis Helper" parent="CameraRig/SkeletalAvatar/Eyes" index="1"]
+visible = false
+
+[node name="BodySolver" parent="." node_paths=PackedStringArray("CameraRig") instance=ExtResource("3_gfmwf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+CameraRig = NodePath("../CameraRig")
+
+[node name="PhysicsRig" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+
+[node name="Locosphere" type="RigidBody3D" parent="PhysicsRig"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+
+[node name="LocosphereCollision" type="CollisionShape3D" parent="PhysicsRig/Locosphere"]
+shape = SubResource("SphereShape3D_lmjnj")
+
+[node name="LocosphereMesh" type="MeshInstance3D" parent="PhysicsRig/Locosphere/LocosphereCollision"]
+mesh = SubResource("SphereMesh_jj4w0")
+skeleton = NodePath("../..")
+
+[node name="LegsJoint" type="Generic6DOFJoint3D" parent="PhysicsRig/Locosphere"]
+node_a = NodePath("..")
+node_b = NodePath("../../Core")
+linear_limit_x/restitution = 1.0
+linear_limit_x/damping = 0.01
+linear_limit_y/upper_distance = 1.0
+linear_limit_y/lower_distance = 0.3
+linear_limit_z/restitution = 1.0
+linear_limit_z/damping = 0.01
+linear_spring_y/enabled = true
+linear_spring_y/equilibrium_point = 0.9
+
+[node name="Core" type="RigidBody3D" parent="PhysicsRig" node_paths=PackedStringArray("_ChestMount", "_CamRig", "_BodySolver")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0)
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+script = ExtResource("4_jlr6y")
+_ChestMount = NodePath("ChestMount")
+_CamRig = NodePath("../../CameraRig")
+_BodySolver = NodePath("../../BodySolver")
+
+[node name="ChestCollision" type="CollisionShape3D" parent="PhysicsRig/Core"]
+shape = SubResource("BoxShape3D_gp6i1")
+
+[node name="ChestMesh" type="MeshInstance3D" parent="PhysicsRig/Core/ChestCollision"]
+mesh = SubResource("BoxMesh_8hf0b")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PhysicsRig/Core"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.411492, -0.092548)
+shape = SubResource("CapsuleShape3D_oq1ph")
+
+[node name="HeadMesh" type="MeshInstance3D" parent="PhysicsRig/Core/CollisionShape3D"]
+mesh = SubResource("CapsuleMesh_vcfel")
+skeleton = NodePath("../..")
+
+[node name="ChestMount" type="Node3D" parent="PhysicsRig/Core"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+
+[editable path="CameraRig"]
+[editable path="CameraRig/SkeletalAvatar"]
+[editable path="CameraRig/SkeletalAvatar/Eyes"]
+[editable path="CameraRig/SkeletalAvatar/Neck"]
+[editable path="CameraRig/SkeletalAvatar/Chest"]
+[editable path="CameraRig/SkeletalAvatar/Spine"]
+[editable path="CameraRig/SkeletalAvatar/Body Direction"]
+[editable path="CameraRig/SkeletalAvatar/LShoulder"]
+[editable path="CameraRig/SkeletalAvatar/LElbow"]
+[editable path="CameraRig/SkeletalAvatar/LWrist"]
+[editable path="CameraRig/SkeletalAvatar/LHips"]
+[editable path="CameraRig/SkeletalAvatar/LKnee"]
+[editable path="CameraRig/SkeletalAvatar/LAnkle"]
+[editable path="CameraRig/SkeletalAvatar/LToe"]
+[editable path="CameraRig/SkeletalAvatar/RShoulder"]
+[editable path="CameraRig/SkeletalAvatar/RElbow"]
+[editable path="CameraRig/SkeletalAvatar/RWrist"]
+[editable path="CameraRig/SkeletalAvatar/RHips"]
+[editable path="CameraRig/SkeletalAvatar/RKnee"]
+[editable path="CameraRig/SkeletalAvatar/RAnkle"]
+[editable path="CameraRig/SkeletalAvatar/RToe"]
