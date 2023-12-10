@@ -1,8 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://3716brh3f04n"]
+[gd_scene load_steps=12 format=3 uid="uid://3716brh3f04n"]
 
 [ext_resource type="PackedScene" uid="uid://cyb2l1vcms8n0" path="res://addons/Godot-OpenXR-Startup/OpenXR Startup/CameraRig.tscn" id="1_o26st"]
 [ext_resource type="PackedScene" uid="uid://c8ccdoo0nk1uy" path="res://addons/Godot-VR-Body-Solver/Scenes/SkeletalAvatar.tscn" id="2_0fogy"]
 [ext_resource type="PackedScene" uid="uid://bo3f3lg1xqgqb" path="res://addons/Godot-VR-Body-Solver/Scenes/PreparedBodySolver.tscn" id="3_gfmwf"]
+[ext_resource type="Script" path="res://addons/Newton/Scripts/LegsJoint.cs" id="4_7bptw"]
 [ext_resource type="Script" path="res://addons/Newton/Scripts/CoreRB.cs" id="4_jlr6y"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_lmjnj"]
@@ -48,7 +49,7 @@ CameraRig = NodePath("../CameraRig")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 
 [node name="Locosphere" type="RigidBody3D" parent="PhysicsRig"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0)
 
 [node name="LocosphereCollision" type="CollisionShape3D" parent="PhysicsRig/Locosphere"]
 shape = SubResource("SphereShape3D_lmjnj")
@@ -57,23 +58,34 @@ shape = SubResource("SphereShape3D_lmjnj")
 mesh = SubResource("SphereMesh_jj4w0")
 skeleton = NodePath("../..")
 
-[node name="LegsJoint" type="Generic6DOFJoint3D" parent="PhysicsRig/Locosphere"]
-node_a = NodePath("..")
-node_b = NodePath("../../Core")
+[node name="LegsJoint" type="Generic6DOFJoint3D" parent="PhysicsRig/Locosphere" node_paths=PackedStringArray("_ChestMount", "_CamRig", "_BodySolver", "_LocosphereCollision")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+node_a = NodePath("../../Core")
+node_b = NodePath("..")
 linear_limit_x/restitution = 1.0
 linear_limit_x/damping = 0.01
+linear_limit_y/enabled = false
 linear_limit_y/upper_distance = 1.0
-linear_limit_y/lower_distance = 0.3
+linear_limit_y/softness = 1.0
+linear_limit_y/restitution = 0.95
 linear_limit_z/restitution = 1.0
 linear_limit_z/damping = 0.01
 linear_spring_y/enabled = true
+linear_spring_y/stiffness = 200.0
+linear_spring_y/damping = 8.0
 linear_spring_y/equilibrium_point = 0.9
+script = ExtResource("4_7bptw")
+_ChestMount = NodePath("../../Core/ChestMount")
+_CamRig = NodePath("../../../CameraRig")
+_BodySolver = NodePath("../../../BodySolver")
+_LocosphereCollision = NodePath("../LocosphereCollision")
 
 [node name="Core" type="RigidBody3D" parent="PhysicsRig" node_paths=PackedStringArray("_ChestMount", "_CamRig", "_BodySolver")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0)
 axis_lock_angular_x = true
 axis_lock_angular_y = true
 axis_lock_angular_z = true
+can_sleep = false
 script = ExtResource("4_jlr6y")
 _ChestMount = NodePath("ChestMount")
 _CamRig = NodePath("../../CameraRig")
