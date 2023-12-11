@@ -12,7 +12,7 @@ public partial class LegsJoint : Generic6DofJoint3D
 	public override void _Process(double delta)
 	{
 		float chestHeight = _CamRig.GlobalBasis.Scale.Y * _BodySolver.GetChestPos().Y;
-		float locosphereRadius = ((SphereShape3D)_LocosphereCollision.Shape).Radius;
+		float locosphereRadius = ((SphereShape3D)_LocosphereCollision.Shape).Radius * _LocosphereCollision.GlobalBasis.Scale.Y;
 		float chestMountOffset = _ChestMount.GlobalPosition.Y - ((Node3D)_ChestMount.GetParent()).GlobalPosition.Y;
 
 		//distance between locosphere center and chest center
