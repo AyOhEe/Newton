@@ -77,8 +77,8 @@ node_b = NodePath("..")
 linear_limit_y/enabled = false
 linear_limit_y/upper_distance = 1.0
 linear_spring_y/enabled = true
-linear_spring_y/stiffness = 200.0
-linear_spring_y/damping = 8.0
+linear_spring_y/stiffness = 400.0
+linear_spring_y/damping = 10.0
 linear_spring_y/equilibrium_point = 0.9
 angular_limit_x/enabled = false
 angular_limit_y/enabled = false
@@ -88,6 +88,8 @@ _ChestMount = NodePath("../../Core/ChestMount")
 _CamRig = NodePath("../../../CameraRig")
 _BodySolver = NodePath("../../../BodySolver")
 _LocosphereCollision = NodePath("../LocosphereCollision")
+_CrouchingEquilibrium = 0.2
+_JumpCrouchSpeed = 2.0
 
 [node name="Axis Helper" parent="PhysicsRig/Locosphere" instance=ExtResource("6_qk7u3")]
 transform = Transform3D(0.15, 0, 0, 0, 0.15, 0, 0, 0, 0.15, 0, 0, 0)
@@ -128,6 +130,8 @@ _CameraRig = NodePath("../../CameraRig")
 _RigRigidbodies = [NodePath("../Locosphere"), NodePath("../Core")]
 
 [connection signal="input_vector2_changed" from="CameraRig/LeftHand" to="PhysicsRig/Locosphere" method="ControllerVec2Input"]
+[connection signal="button_pressed" from="CameraRig/RightHand" to="PhysicsRig/Locosphere/LegsJoint" method="ControllerButtonPressed"]
+[connection signal="button_released" from="CameraRig/RightHand" to="PhysicsRig/Locosphere/LegsJoint" method="ControllerButtonReleased"]
 
 [editable path="CameraRig"]
 [editable path="CameraRig/SkeletalAvatar"]
