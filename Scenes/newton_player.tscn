@@ -3,11 +3,11 @@
 [ext_resource type="PackedScene" uid="uid://cyb2l1vcms8n0" path="res://addons/Godot-OpenXR-Startup/OpenXR Startup/CameraRig.tscn" id="1_o26st"]
 [ext_resource type="PackedScene" uid="uid://c8ccdoo0nk1uy" path="res://addons/Godot-VR-Body-Solver/Scenes/SkeletalAvatar.tscn" id="2_0fogy"]
 [ext_resource type="PackedScene" uid="uid://bo3f3lg1xqgqb" path="res://addons/Godot-VR-Body-Solver/Scenes/PreparedBodySolver.tscn" id="3_gfmwf"]
+[ext_resource type="Script" path="res://addons/Newton/Scripts/Turning.cs" id="3_xhkru"]
 [ext_resource type="Script" path="res://addons/Newton/Scripts/LegsJoint.cs" id="4_7bptw"]
 [ext_resource type="Script" path="res://addons/Newton/Scripts/CoreRB.cs" id="4_jlr6y"]
 [ext_resource type="Script" path="res://addons/Newton/Scripts/LocosphereMovement.cs" id="4_w6sr6"]
 [ext_resource type="Script" path="res://addons/Newton/Scripts/MoveWithChest.cs" id="6_0bglg"]
-[ext_resource type="PackedScene" uid="uid://ta178svgkj7b" path="res://addons/Godot-Extras/Axis Helper/Axis Helper.tscn" id="6_qk7u3"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_7mq57"]
 friction = 10.0
@@ -48,6 +48,17 @@ Solver = NodePath("../../BodySolver")
 [node name="Axis Helper" parent="CameraRig/SkeletalAvatar/Eyes" index="1"]
 visible = false
 
+[node name="Turning" type="Node" parent="CameraRig" node_paths=PackedStringArray("_CameraRig", "_TurnPivot", "_SnapTurnResetTimer")]
+script = ExtResource("3_xhkru")
+_CameraRig = NodePath("..")
+_TurnPivot = NodePath("../Camera")
+_SnapTurnResetTimer = NodePath("Timer")
+_TurnMode = 2
+_SmoothTurnPerSecond = 100.0
+
+[node name="Timer" type="Timer" parent="CameraRig/Turning"]
+one_shot = true
+
 [node name="BodySolver" parent="." node_paths=PackedStringArray("CameraRig") instance=ExtResource("3_gfmwf")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 CameraRig = NodePath("../CameraRig")
@@ -55,11 +66,12 @@ CameraRig = NodePath("../CameraRig")
 [node name="PhysicsRig" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 
-[node name="Locosphere" type="RigidBody3D" parent="PhysicsRig" node_paths=PackedStringArray("_BodySolver")]
+[node name="Locosphere" type="RigidBody3D" parent="PhysicsRig" node_paths=PackedStringArray("_CameraRig", "_BodySolver")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0)
 physics_material_override = SubResource("PhysicsMaterial_7mq57")
 can_sleep = false
 script = ExtResource("4_w6sr6")
+_CameraRig = NodePath("../../CameraRig")
 _BodySolver = NodePath("../../BodySolver")
 _DeadzoneRadius = 0.1
 _AngVelMultiplier = 10.0
@@ -89,12 +101,10 @@ _CamRig = NodePath("../../../CameraRig")
 _BodySolver = NodePath("../../../BodySolver")
 _LocosphereCollision = NodePath("../LocosphereCollision")
 _JumpCrouchSpeed = 2.0
+_CrouchingDeadzone = 0.3
 _MaxCrouchEquilibrium = 1.0
 
-[node name="Axis Helper" parent="PhysicsRig/Locosphere" instance=ExtResource("6_qk7u3")]
-transform = Transform3D(0.15, 0, 0, 0, 0.15, 0, 0, 0, 0.15, 0, 0, 0)
-
-[node name="Core" type="RigidBody3D" parent="PhysicsRig" node_paths=PackedStringArray("_ChestMount", "_CamRig", "_BodySolver")]
+[node name="Core" type="RigidBody3D" parent="PhysicsRig" node_paths=PackedStringArray("_ChestMount", "_CameraRig", "_BodySolver")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0)
 axis_lock_angular_x = true
 axis_lock_angular_y = true
@@ -102,7 +112,7 @@ axis_lock_angular_z = true
 can_sleep = false
 script = ExtResource("4_jlr6y")
 _ChestMount = NodePath("ChestMount")
-_CamRig = NodePath("../../CameraRig")
+_CameraRig = NodePath("../../CameraRig")
 _BodySolver = NodePath("../../BodySolver")
 
 [node name="ChestCollision" type="CollisionShape3D" parent="PhysicsRig/Core"]
@@ -132,7 +142,9 @@ _RigRigidbodies = [NodePath("../Locosphere"), NodePath("../Core")]
 [connection signal="input_vector2_changed" from="CameraRig/LeftHand" to="PhysicsRig/Locosphere" method="ControllerVec2Input"]
 [connection signal="button_pressed" from="CameraRig/RightHand" to="PhysicsRig/Locosphere/LegsJoint" method="ControllerButtonPressed"]
 [connection signal="button_released" from="CameraRig/RightHand" to="PhysicsRig/Locosphere/LegsJoint" method="ControllerButtonReleased"]
+[connection signal="input_vector2_changed" from="CameraRig/RightHand" to="CameraRig/Turning" method="ControllerVec2Input"]
 [connection signal="input_vector2_changed" from="CameraRig/RightHand" to="PhysicsRig/Locosphere/LegsJoint" method="ControllerVec2Changed"]
+[connection signal="timeout" from="CameraRig/Turning/Timer" to="CameraRig/Turning" method="ReEnableSnapTurn"]
 
 [editable path="CameraRig"]
 [editable path="CameraRig/SkeletalAvatar"]

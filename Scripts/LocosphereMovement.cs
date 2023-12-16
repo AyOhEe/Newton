@@ -3,6 +3,7 @@ using System;
 
 public partial class LocosphereMovement : RigidBody3D
 {
+	[Export] private CameraRig _CameraRig;
 	[Export] private BodySolver _BodySolver;
 	[Export] private float _DeadzoneRadius;
 	[Export] private float _AngVelMultiplier;
@@ -12,7 +13,8 @@ public partial class LocosphereMovement : RigidBody3D
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _PhysicsProcess(double delta)
 	{
-		Vector3 XZJoystickInput = _BodySolver.GetBodyDirection() * new Vector3(_JoystickInput.X, 0, -_JoystickInput.Y);
+		Basis bodyDir = _CameraRig.GlobalBasis * _BodySolver.GetBodyDirection();
+        Vector3 XZJoystickInput = bodyDir * new Vector3(_JoystickInput.X, 0, -_JoystickInput.Y);
 		AngularVelocity = Vector3.Up.Cross(XZJoystickInput) * _AngVelMultiplier;
 	}
 
