@@ -74,7 +74,7 @@ script = ExtResource("4_w6sr6")
 _CameraRig = NodePath("../../CameraRig")
 _BodySolver = NodePath("../../BodySolver")
 _DeadzoneRadius = 0.1
-_AngVelMultiplier = 10.0
+_CrouchedAngVelMultiplier = 0.75
 
 [node name="LocosphereCollision" type="CollisionShape3D" parent="PhysicsRig/Locosphere"]
 shape = SubResource("SphereShape3D_lmjnj")
@@ -139,6 +139,7 @@ _BodySolver = NodePath("../../BodySolver")
 _CameraRig = NodePath("../../CameraRig")
 _RigRigidbodies = [NodePath("../Locosphere"), NodePath("../Core")]
 
+[connection signal="button_pressed" from="CameraRig/LeftHand" to="PhysicsRig/Locosphere" method="ControllerButtonInput"]
 [connection signal="input_vector2_changed" from="CameraRig/LeftHand" to="PhysicsRig/Locosphere" method="ControllerVec2Input"]
 [connection signal="button_pressed" from="CameraRig/RightHand" to="PhysicsRig/Locosphere/LegsJoint" method="ControllerButtonPressed"]
 [connection signal="button_released" from="CameraRig/RightHand" to="PhysicsRig/Locosphere/LegsJoint" method="ControllerButtonReleased"]
