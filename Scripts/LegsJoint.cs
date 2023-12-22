@@ -8,6 +8,8 @@ public partial class LegsJoint : Generic6DofJoint3D
     [Export] private CameraRig _CamRig;
     [Export] private BodySolver _BodySolver;
 	[Export] private CollisionShape3D _LocosphereCollision;
+    [Export] private CollisionShape3D _FenderCollision;
+    [Export] private Generic6DofJoint3D _FenderJoint;
 
     [ExportCategory("Jumping settings")]
     [Export] private float _JumpCrouchSpeed = 1;
@@ -26,11 +28,13 @@ public partial class LegsJoint : Generic6DofJoint3D
 
 
     private Vector2 _CrouchThumbstickInput;
+    private float _FenderJointOffset;
 
 
     public override void _Ready()
     {
         _WorkingCrouchSpeed = _CrouchSpeed;
+        _FenderJointOffset = (_FenderCollision.GlobalPosition - _FenderJoint.GlobalPosition).Y;
     }
 
 
@@ -63,6 +67,7 @@ public partial class LegsJoint : Generic6DofJoint3D
         SetParamY(Param.LinearSpringEquilibriumPoint, _CurrentEquilibrium);
     }
 
+    //TODO this needs to account for the fender
     //calculates the required extension for the leg joint such that the player camera and floor are correct
 	private float RequiredLegExtension()
 	{
@@ -71,7 +76,7 @@ public partial class LegsJoint : Generic6DofJoint3D
         float chestMountOffset = _ChestMount.GlobalPosition.Y - ((Node3D)_ChestMount.GetParent()).GlobalPosition.Y;
 
         //distance between locosphere center and chest center
-        float requiredExtension = chestHeight - locosphereRadius - chestMountOffset;
+        float requiredExtension = chestHeight - locosphereRadius - chestMountOffset - _FenderJointOffset;
         return requiredExtension;
     }
 
