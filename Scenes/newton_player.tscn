@@ -70,6 +70,12 @@ CameraRig = NodePath("../CameraRig")
 
 [node name="PhysicsRig" type="Node3D" parent="."]
 
+[node name="MoveWithChest" type="Node" parent="PhysicsRig" node_paths=PackedStringArray("_BodySolver", "_CameraRig", "_RigRigidbodies")]
+script = ExtResource("6_0bglg")
+_BodySolver = NodePath("../../BodySolver")
+_CameraRig = NodePath("../../CameraRig")
+_RigRigidbodies = [NodePath("../Fender"), NodePath("../Core"), NodePath("../Locosphere")]
+
 [node name="Locosphere" type="RigidBody3D" parent="PhysicsRig" node_paths=PackedStringArray("_CameraRig", "_BodySolver")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.956946, 0)
 collision_layer = 2
@@ -164,12 +170,6 @@ skeleton = NodePath("../..")
 
 [node name="ChestMount" type="Node3D" parent="PhysicsRig/Core"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
-
-[node name="MoveWithChest" type="Node" parent="PhysicsRig" node_paths=PackedStringArray("_BodySolver", "_CameraRig", "_RigRigidbodies")]
-script = ExtResource("6_0bglg")
-_BodySolver = NodePath("../../BodySolver")
-_CameraRig = NodePath("../../CameraRig")
-_RigRigidbodies = [NodePath("../Fender"), NodePath("../Core"), NodePath("../Locosphere")]
 
 [connection signal="button_pressed" from="CameraRig/LeftHand" to="PhysicsRig/Locosphere" method="ControllerButtonInput"]
 [connection signal="input_vector2_changed" from="CameraRig/LeftHand" to="PhysicsRig/Locosphere" method="ControllerVec2Input"]
