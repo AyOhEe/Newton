@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://gpmyah7fn7um"]
+
+[ext_resource type="PackedScene" uid="uid://dq1ih4yt12nvk" path="res://addons/Newton/Models/Hands/Meshes/vr_glove_left_model_slim.glb" id="1_uqs4q"]
+
+[node name="vr_glove_left_model_slim" instance=ExtResource("1_uqs4q")]
+
+[node name="Armature" parent="." index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="Skeleton3D" parent="Armature" index="0"]
+bones/0/rotation = Quaternion(0.000474975, 0.000474975, 0.000474975, 1.00048)
