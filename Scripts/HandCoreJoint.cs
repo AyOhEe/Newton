@@ -17,6 +17,10 @@ public partial class HandCoreJoint : Node
     [Export] private float _MaxImpulsePerSecond = 10;
 
 
+	[ExportCategory("Angular motion settings")]
+	[Export] private float _AngularApproachTime = 0.05f;
+
+
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _PhysicsProcess(double delta)
@@ -25,6 +29,7 @@ public partial class HandCoreJoint : Node
 
 
 		HandleLinearMotion(wristTransform, delta);
+		HandleAngularMotion(wristTransform, delta);
     }
 
 	private void HandleLinearMotion(Transform3D wristTransform, double delta)
@@ -50,6 +55,25 @@ public partial class HandCoreJoint : Node
 
 		return wristApproachVel + _CoreRB.LinearVelocity;
 	}
+
+
+	private void HandleAngularMotion(Transform3D wristTransform, double delta)
+	{
+		//convert the current and desired rotations into quaternsions, then get the difference
+		Quaternion currentRot = _HandRB.GlobalBasis.GetRotationQuaternion();
+		Quaternion desiredRot = wristTransform.Basis.GetRotationQuaternion();
+		Quaternion deltaQ = desiredRot * currentRot.Inverse();
+
+		//use the smallest rotation possible (one quaternion can represent two possible rotations)
+		if (deltaQ.GetAngle() > Mathf.Pi)
+		{
+			deltaQ = -deltaQ;
+		}
+
+		//use this to calculate the axis and angle of rotation
+		_HandRB.AngularVelocity = (deltaQ.GetAxis() * deltaQ.GetAngle()) / _AngularApproachTime;
+    }
+
 
 	private Transform3D GetWristTransform()
 	{
