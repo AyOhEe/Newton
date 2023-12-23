@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://3716brh3f04n"]
+[gd_scene load_steps=25 format=3 uid="uid://3716brh3f04n"]
 
 [ext_resource type="PackedScene" uid="uid://cyb2l1vcms8n0" path="res://addons/Godot-OpenXR-Startup/OpenXR Startup/CameraRig.tscn" id="1_o26st"]
 [ext_resource type="PackedScene" uid="uid://c8ccdoo0nk1uy" path="res://addons/Godot-VR-Body-Solver/Scenes/SkeletalAvatar.tscn" id="2_0fogy"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://addons/Newton/Scripts/MoveWithChest.cs" id="6_0bglg"]
 [ext_resource type="PackedScene" uid="uid://gpmyah7fn7um" path="res://addons/Newton/Models/Hands/vr_glove_left_model_slim.tscn" id="9_861yw"]
 [ext_resource type="Script" path="res://addons/Newton/Scripts/HandCoreJoint.cs" id="9_gue12"]
+[ext_resource type="Script" path="res://addons/Newton/Scripts/IgnoreCollision.cs" id="10_avgum"]
 [ext_resource type="PackedScene" uid="uid://dk5nfpbuk3mvr" path="res://addons/Newton/Models/Hands/vr_glove_right_model_slim.tscn" id="10_mtn3l"]
 [ext_resource type="PackedScene" uid="uid://ta178svgkj7b" path="res://addons/Godot-Extras/Axis Helper/Axis Helper.tscn" id="10_pt675"]
 
@@ -91,7 +92,6 @@ _RigRigidbodies = [NodePath("../Fender"), NodePath("../Core"), NodePath("../Loco
 
 [node name="Locosphere" type="RigidBody3D" parent="PhysicsRig" node_paths=PackedStringArray("_CameraRig", "_BodySolver")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.956946, 0)
-collision_layer = 2
 mass = 5.0
 physics_material_override = SubResource("PhysicsMaterial_7mq57")
 can_sleep = false
@@ -119,7 +119,6 @@ angular_limit_z/enabled = false
 
 [node name="Fender" type="RigidBody3D" parent="PhysicsRig"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-collision_layer = 2
 axis_lock_angular_x = true
 axis_lock_angular_y = true
 axis_lock_angular_z = true
@@ -159,7 +158,6 @@ _MaxCrouchEquilibrium = 1.0
 
 [node name="Core" type="RigidBody3D" parent="PhysicsRig" node_paths=PackedStringArray("_ChestMount", "_CameraRig", "_BodySolver")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-collision_layer = 2
 axis_lock_angular_x = true
 axis_lock_angular_y = true
 axis_lock_angular_z = true
@@ -207,9 +205,13 @@ _CoreRB = NodePath("..")
 _LinearApproachTime = 0.05
 _MaxImpulsePerSecond = 300.0
 
+[node name="IgnoreLocosphereCollision" type="Node" parent="PhysicsRig/Core" node_paths=PackedStringArray("A", "B")]
+script = ExtResource("10_avgum")
+A = NodePath("..")
+B = NodePath("../../Locosphere")
+
 [node name="LeftHand" type="RigidBody3D" parent="PhysicsRig"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.085, 0.056, 0)
-collision_layer = 2
 mass = 2.0
 physics_material_override = SubResource("PhysicsMaterial_wuh51")
 gravity_scale = 0.2
@@ -227,7 +229,6 @@ shape = SubResource("BoxShape3D_y5b6f")
 
 [node name="RightHand" type="RigidBody3D" parent="PhysicsRig"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.09, 0.056, 0)
-collision_layer = 2
 mass = 2.0
 physics_material_override = SubResource("PhysicsMaterial_wuh51")
 gravity_scale = 0.2
