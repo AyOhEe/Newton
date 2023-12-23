@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://drotcuwokbp1" path="res://addons/Newton/Models/Hands/Meshes/vr_glove_right_model_slim.glb" id="1_q3qn3"]
 
 [node name="vr_glove_right_model_slim" instance=ExtResource("1_q3qn3")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, 0)
 
 [node name="Armature" parent="." index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)

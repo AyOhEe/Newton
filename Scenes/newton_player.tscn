@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://3716brh3f04n"]
+[gd_scene load_steps=24 format=3 uid="uid://3716brh3f04n"]
 
 [ext_resource type="PackedScene" uid="uid://cyb2l1vcms8n0" path="res://addons/Godot-OpenXR-Startup/OpenXR Startup/CameraRig.tscn" id="1_o26st"]
 [ext_resource type="PackedScene" uid="uid://c8ccdoo0nk1uy" path="res://addons/Godot-VR-Body-Solver/Scenes/SkeletalAvatar.tscn" id="2_0fogy"]
@@ -9,19 +9,21 @@
 [ext_resource type="Script" path="res://addons/Newton/Scripts/LocosphereMovement.cs" id="4_w6sr6"]
 [ext_resource type="Script" path="res://addons/Newton/Scripts/MoveWithChest.cs" id="6_0bglg"]
 [ext_resource type="PackedScene" uid="uid://gpmyah7fn7um" path="res://addons/Newton/Models/Hands/vr_glove_left_model_slim.tscn" id="9_861yw"]
+[ext_resource type="Script" path="res://addons/Newton/Scripts/HandCoreJoint.cs" id="9_gue12"]
 [ext_resource type="PackedScene" uid="uid://dk5nfpbuk3mvr" path="res://addons/Newton/Models/Hands/vr_glove_right_model_slim.tscn" id="10_mtn3l"]
 [ext_resource type="PackedScene" uid="uid://ta178svgkj7b" path="res://addons/Godot-Extras/Axis Helper/Axis Helper.tscn" id="10_pt675"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_7mq57"]
-friction = 10.0
+resource_local_to_scene = true
+friction = 20.0
 rough = true
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_xr4nt"]
-radius = 0.2
+radius = 0.215
 
 [sub_resource type="SphereMesh" id="SphereMesh_28osh"]
-radius = 0.2
-height = 0.4
+radius = 0.215
+height = 0.43
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_lmjnj"]
 radius = 0.22
@@ -43,6 +45,11 @@ height = 0.27
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_vcfel"]
 radius = 0.08
 height = 0.27
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_wuh51"]
+friction = 5.0
+rough = true
+absorbent = true
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_y5b6f"]
 size = Vector3(0.0492554, 0.0869141, 0.160278)
@@ -85,6 +92,7 @@ _RigRigidbodies = [NodePath("../Fender"), NodePath("../Core"), NodePath("../Loco
 [node name="Locosphere" type="RigidBody3D" parent="PhysicsRig" node_paths=PackedStringArray("_CameraRig", "_BodySolver")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.956946, 0)
 collision_layer = 2
+mass = 5.0
 physics_material_override = SubResource("PhysicsMaterial_7mq57")
 can_sleep = false
 script = ExtResource("4_w6sr6")
@@ -104,6 +112,7 @@ skeleton = NodePath("../..")
 [node name="FenderJoint" type="Generic6DOFJoint3D" parent="PhysicsRig/Locosphere"]
 node_a = NodePath("..")
 node_b = NodePath("../../Fender")
+solver_priority = 8
 angular_limit_x/enabled = false
 angular_limit_y/enabled = false
 angular_limit_z/enabled = false
@@ -114,6 +123,7 @@ collision_layer = 2
 axis_lock_angular_x = true
 axis_lock_angular_y = true
 axis_lock_angular_z = true
+mass = 5.0
 physics_material_override = SubResource("PhysicsMaterial_7mq57")
 can_sleep = false
 
@@ -130,8 +140,8 @@ node_b = NodePath("..")
 linear_limit_y/enabled = false
 linear_limit_y/upper_distance = 1.0
 linear_spring_y/enabled = true
-linear_spring_y/stiffness = 400.0
-linear_spring_y/damping = 10.0
+linear_spring_y/stiffness = 4000.0
+linear_spring_y/damping = 500.0
 linear_spring_y/equilibrium_point = 0.9
 angular_limit_x/enabled = false
 angular_limit_y/enabled = false
@@ -153,6 +163,7 @@ collision_layer = 2
 axis_lock_angular_x = true
 axis_lock_angular_y = true
 axis_lock_angular_z = true
+mass = 20.0
 can_sleep = false
 script = ExtResource("4_jlr6y")
 _ChestMount = NodePath("ChestMount")
@@ -177,34 +188,59 @@ skeleton = NodePath("../..")
 [node name="ChestMount" type="Node3D" parent="PhysicsRig/Core"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
 
+[node name="LHandCoreJoint" type="Node" parent="PhysicsRig/Core" node_paths=PackedStringArray("_CameraRig", "_BodySolver", "_HandRB", "_CoreRB")]
+script = ExtResource("9_gue12")
+_IsLeftHanded = true
+_CameraRig = NodePath("../../../CameraRig")
+_BodySolver = NodePath("../../../BodySolver")
+_HandRB = NodePath("../../LeftHand")
+_CoreRB = NodePath("..")
+_LinearApproachTime = 0.05
+_MaxImpulsePerSecond = 300.0
+
+[node name="RHandCoreJoint" type="Node" parent="PhysicsRig/Core" node_paths=PackedStringArray("_CameraRig", "_BodySolver", "_HandRB", "_CoreRB")]
+script = ExtResource("9_gue12")
+_CameraRig = NodePath("../../../CameraRig")
+_BodySolver = NodePath("../../../BodySolver")
+_HandRB = NodePath("../../RightHand")
+_CoreRB = NodePath("..")
+_LinearApproachTime = 0.05
+_MaxImpulsePerSecond = 300.0
+
 [node name="LeftHand" type="RigidBody3D" parent="PhysicsRig"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0850577, 0.0562868, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.085, 0.056, 0)
+collision_layer = 2
+mass = 2.0
+physics_material_override = SubResource("PhysicsMaterial_wuh51")
+gravity_scale = 0.2
 
 [node name="vr_glove_left_model_slim" parent="PhysicsRig/LeftHand" instance=ExtResource("9_861yw")]
 
 [node name="LeftWristMount" type="Node3D" parent="PhysicsRig/LeftHand"]
-transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
 
 [node name="Axis Helper" parent="PhysicsRig/LeftHand/LeftWristMount" instance=ExtResource("10_pt675")]
 transform = Transform3D(0.03, 0, 0, 0, 0.03, 0, 0, 0, 0.03, 0, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="PhysicsRig/LeftHand"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00717162, 0.00732422, 0.0617065)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.007, 0.007, -0.062)
 shape = SubResource("BoxShape3D_y5b6f")
 
 [node name="RightHand" type="RigidBody3D" parent="PhysicsRig"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0902387, 0.0562868, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.09, 0.056, 0)
+collision_layer = 2
+mass = 2.0
+physics_material_override = SubResource("PhysicsMaterial_wuh51")
+gravity_scale = 0.2
 
 [node name="vr_glove_right_model_slim" parent="PhysicsRig/RightHand" instance=ExtResource("10_mtn3l")]
 
 [node name="RightWristMount" type="Node3D" parent="PhysicsRig/RightHand"]
-transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
 
 [node name="Axis Helper" parent="PhysicsRig/RightHand/RightWristMount" instance=ExtResource("10_pt675")]
 transform = Transform3D(0.03, 0, 0, 0, 0.03, 0, 0, 0, 0.03, 0, 0, 0)
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="PhysicsRig/RightHand"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.007, 0.007, 0.062)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.007, 0.007, -0.062)
 shape = SubResource("BoxShape3D_y5b6f")
 
 [connection signal="button_pressed" from="CameraRig/LeftHand" to="PhysicsRig/Locosphere" method="ControllerButtonInput"]
