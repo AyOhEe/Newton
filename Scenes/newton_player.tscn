@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://3716brh3f04n"]
+[gd_scene load_steps=26 format=3 uid="uid://3716brh3f04n"]
 
 [ext_resource type="PackedScene" uid="uid://cyb2l1vcms8n0" path="res://addons/Godot-OpenXR-Startup/OpenXR Startup/CameraRig.tscn" id="1_o26st"]
 [ext_resource type="PackedScene" uid="uid://c8ccdoo0nk1uy" path="res://addons/Godot-VR-Body-Solver/Scenes/SkeletalAvatar.tscn" id="2_0fogy"]
@@ -13,6 +13,7 @@
 [ext_resource type="Script" path="res://addons/Newton/Scripts/IgnoreCollision.cs" id="10_avgum"]
 [ext_resource type="PackedScene" uid="uid://dk5nfpbuk3mvr" path="res://addons/Newton/Models/Hands/vr_glove_right_model_slim.tscn" id="10_mtn3l"]
 [ext_resource type="PackedScene" uid="uid://ta178svgkj7b" path="res://addons/Godot-Extras/Axis Helper/Axis Helper.tscn" id="10_pt675"]
+[ext_resource type="Script" path="res://addons/Newton/Scripts/Grabbables/PhysbodyHand.cs" id="11_bonw1"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_7mq57"]
 resource_local_to_scene = true
@@ -112,7 +113,6 @@ skeleton = NodePath("../..")
 [node name="FenderJoint" type="Generic6DOFJoint3D" parent="PhysicsRig/Locosphere"]
 node_a = NodePath("..")
 node_b = NodePath("../../Fender")
-solver_priority = 8
 angular_limit_x/enabled = false
 angular_limit_y/enabled = false
 angular_limit_z/enabled = false
@@ -212,18 +212,16 @@ script = ExtResource("10_avgum")
 A = NodePath("..")
 B = NodePath("../../Locosphere")
 
-[node name="LeftHand" type="RigidBody3D" parent="PhysicsRig"]
+[node name="LeftHand" type="RigidBody3D" parent="PhysicsRig" node_paths=PackedStringArray("PalmGrabPoint")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.085, 0.056, 0)
 mass = 2.0
 physics_material_override = SubResource("PhysicsMaterial_wuh51")
 gravity_scale = 0.2
+script = ExtResource("11_bonw1")
+IsLeftHanded = true
+PalmGrabPoint = NodePath("PalmGrabPoint")
 
 [node name="vr_glove_left_model_slim" parent="PhysicsRig/LeftHand" instance=ExtResource("9_861yw")]
-
-[node name="LeftWristMount" type="Node3D" parent="PhysicsRig/LeftHand"]
-
-[node name="Axis Helper" parent="PhysicsRig/LeftHand/LeftWristMount" instance=ExtResource("10_pt675")]
-transform = Transform3D(0.03, 0, 0, 0, 0.03, 0, 0, 0, 0.03, 0, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="PhysicsRig/LeftHand"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.007, 0.007, -0.062)
@@ -232,18 +230,18 @@ shape = SubResource("BoxShape3D_y5b6f")
 [node name="PalmGrabPoint" type="Node3D" parent="PhysicsRig/LeftHand"]
 transform = Transform3D(0.146635, 0, -0.989191, 0, 1, 0, 0.989191, 0, 0.146635, 0.0159803, 0, -0.0719327)
 
-[node name="RightHand" type="RigidBody3D" parent="PhysicsRig"]
+[node name="Axis Helper" parent="PhysicsRig/LeftHand" instance=ExtResource("10_pt675")]
+transform = Transform3D(0.03, 0, 0, 0, 0.03, 0, 0, 0, 0.03, 0, 0, 0)
+
+[node name="RightHand" type="RigidBody3D" parent="PhysicsRig" node_paths=PackedStringArray("PalmGrabPoint")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.09, 0.056, 0)
 mass = 2.0
 physics_material_override = SubResource("PhysicsMaterial_wuh51")
 gravity_scale = 0.2
+script = ExtResource("11_bonw1")
+PalmGrabPoint = NodePath("PalmGrabPoint")
 
 [node name="vr_glove_right_model_slim" parent="PhysicsRig/RightHand" instance=ExtResource("10_mtn3l")]
-
-[node name="RightWristMount" type="Node3D" parent="PhysicsRig/RightHand"]
-
-[node name="Axis Helper" parent="PhysicsRig/RightHand/RightWristMount" instance=ExtResource("10_pt675")]
-transform = Transform3D(0.03, 0, 0, 0, 0.03, 0, 0, 0, 0.03, 0, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="PhysicsRig/RightHand"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.007, 0.007, -0.062)
@@ -251,6 +249,9 @@ shape = SubResource("BoxShape3D_y5b6f")
 
 [node name="PalmGrabPoint" type="Node3D" parent="PhysicsRig/RightHand"]
 transform = Transform3D(0.146083, 0, 0.989272, 0, 1, 0, -0.989272, 0, 0.146083, -0.016, 0, -0.072)
+
+[node name="Axis Helper" parent="PhysicsRig/RightHand" instance=ExtResource("10_pt675")]
+transform = Transform3D(0.03, 0, 0, 0, 0.03, 0, 0, 0, 0.03, 0, 0, 0)
 
 [connection signal="button_pressed" from="CameraRig/LeftHand" to="PhysicsRig/Locosphere" method="ControllerButtonInput"]
 [connection signal="input_vector2_changed" from="CameraRig/LeftHand" to="PhysicsRig/Locosphere" method="ControllerVec2Input"]
