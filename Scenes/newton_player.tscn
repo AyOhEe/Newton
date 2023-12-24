@@ -229,6 +229,9 @@ transform = Transform3D(0.03, 0, 0, 0, 0.03, 0, 0, 0, 0.03, 0, 0, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.007, 0.007, -0.062)
 shape = SubResource("BoxShape3D_y5b6f")
 
+[node name="PalmGrabPoint" type="Node3D" parent="PhysicsRig/LeftHand"]
+transform = Transform3D(0.146635, 0, -0.989191, 0, 1, 0, 0.989191, 0, 0.146635, 0.0159803, 0, -0.0719327)
+
 [node name="RightHand" type="RigidBody3D" parent="PhysicsRig"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.09, 0.056, 0)
 mass = 2.0
@@ -242,9 +245,12 @@ gravity_scale = 0.2
 [node name="Axis Helper" parent="PhysicsRig/RightHand/RightWristMount" instance=ExtResource("10_pt675")]
 transform = Transform3D(0.03, 0, 0, 0, 0.03, 0, 0, 0, 0.03, 0, 0, 0)
 
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="PhysicsRig/RightHand"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PhysicsRig/RightHand"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.007, 0.007, -0.062)
 shape = SubResource("BoxShape3D_y5b6f")
+
+[node name="PalmGrabPoint" type="Node3D" parent="PhysicsRig/RightHand"]
+transform = Transform3D(0.146083, 0, 0.989272, 0, 1, 0, -0.989272, 0, 0.146083, -0.016, 0, -0.072)
 
 [connection signal="button_pressed" from="CameraRig/LeftHand" to="PhysicsRig/Locosphere" method="ControllerButtonInput"]
 [connection signal="input_vector2_changed" from="CameraRig/LeftHand" to="PhysicsRig/Locosphere" method="ControllerVec2Input"]
