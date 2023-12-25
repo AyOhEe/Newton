@@ -5,17 +5,17 @@ using System;
 public abstract partial class Grabbable : Node3D
 {
     [ExportCategory("Grabbable Settings")]
-    [Export] protected RigidBody3D _ParentRigidBody;
+    [Export] public RigidBody3D ParentRigidBody { get; protected set; }
     [Export] protected bool _DebugMode;
     [Export] protected PackedScene _AxisHelper;
 
 
     private Node3D _AxisHelperInstance;
-    private PhysbodyHand _LeftHand;
-    private PhysbodyHand _RightHand;
+    private PhysbodyHand _LeftHand = null;
+    private PhysbodyHand _RightHand = null;
 
 
-    public override void _Ready() 
+    public override void _Ready()
     {
         if (_DebugMode)
         {
@@ -27,11 +27,11 @@ public abstract partial class Grabbable : Node3D
 
     public override void _Process(double delta)
     {
-        if(_LeftHand != null)
+        if (_LeftHand != null)
         {
             OnHandStay(_LeftHand);
         }
-        if(_RightHand != null)
+        if (_RightHand != null)
         {
             OnHandStay(_RightHand);
         }
@@ -39,7 +39,8 @@ public abstract partial class Grabbable : Node3D
 
 
     public abstract Transform3D CalculateGrabPose(PhysbodyHand Hand);
-
+    public virtual bool Grab(PhysbodyHand Hand) { return true; }
+    public virtual bool Release(PhysbodyHand Hand) { return true; }
 
     public virtual void OnHandEntered(PhysbodyHand Hand) 
     {
@@ -51,6 +52,7 @@ public abstract partial class Grabbable : Node3D
         {
             _RightHand = Hand;
         }
+        Hand.IntroduceGrabbable(this);
     }
     public virtual void OnHandExit(PhysbodyHand Hand) 
     {
@@ -62,12 +64,13 @@ public abstract partial class Grabbable : Node3D
         {
             _RightHand = null;
         }
+        Hand.RemoveGrabbable(this);
     }
     public virtual void OnHandStay(PhysbodyHand Hand) 
     {
         if (_DebugMode)
         {
-            _AxisHelperInstance.GlobalTransform = _ParentRigidBody.GlobalTransform * CalculateGrabPose(Hand);
+            _AxisHelperInstance.GlobalTransform = ParentRigidBody.GlobalTransform * CalculateGrabPose(Hand);
             _AxisHelperInstance.GlobalBasis *= Basis.Identity.Scaled(Vector3.One * 0.1f);
         }
     }

@@ -14,7 +14,7 @@ public partial class PlaneGrabbable : Grabbable
         projectedPalmPoint.Z = Mathf.Clamp(projectedPalmPoint.Z, -_Dimensions.Y / 2, _Dimensions.Y / 2);
 
         Vector3 worldspacePoint = GlobalTransform * projectedPalmPoint;
-        Vector3 parentspacePoint = _ParentRigidBody.GlobalTransform.Inverse() * worldspacePoint;
+        Vector3 parentspacePoint = ParentRigidBody.GlobalTransform.Inverse() * worldspacePoint;
 
         return new Transform3D(Basis.Identity, parentspacePoint);
     }
