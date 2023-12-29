@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://bedwkal2e0vis"]
+
+[ext_resource type="Script" path="res://addons/Newton/Scripts/Grabbables/PlaneGrabbable.cs" id="1_e6wjh"]
+[ext_resource type="PackedScene" uid="uid://ta178svgkj7b" path="res://addons/Godot-Extras/Axis Helper/Axis Helper.tscn" id="2_53hqn"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ya1vw"]
+size = Vector3(0.3, 0.1, 0.3)
+
+[node name="PlaneGrabbable" type="Node3D" node_paths=PackedStringArray("ParentRigidBody")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
+script = ExtResource("1_e6wjh")
+_Dimensions = Vector2(0.3, 0.3)
+ParentRigidBody = NodePath("")
+_DebugMode = true
+_AxisHelper = ExtResource("2_53hqn")
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
+shape = SubResource("BoxShape3D_ya1vw")
+
+[connection signal="body_entered" from="Area3D" to="." method="OnBodyEntered"]
+[connection signal="body_exited" from="Area3D" to="." method="OnBodyExited"]
