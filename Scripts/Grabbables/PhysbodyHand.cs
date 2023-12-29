@@ -8,8 +8,11 @@ public partial class PhysbodyHand : RigidBody3D
     [Export] public bool IsLeftHanded { get; private set; }
     [Export] public Node3D PalmGrabPoint { get; private set; }
 
-    //[ExportCategory("Grab Joint settings")]
-    
+
+    [ExportCategory("Grab Joint settings")]
+    [Export] private float _LinearSpringStiffness = 1000;
+    [Export] private float _LinearSpringDamping = 100;
+
 
 
     private Array<Grabbable> _NearbyGrabbables = new Array<Grabbable>();
@@ -33,6 +36,11 @@ public partial class PhysbodyHand : RigidBody3D
     {
         //if we're already holding something, don't bother checking for another thing
         if (_HeldGrabbable != null)
+        {
+            return;
+        }
+        //if there's nothing to grab, don't try to
+        if (_NearbyGrabbables.Count == 0)
         {
             return;
         }
@@ -82,22 +90,44 @@ public partial class PhysbodyHand : RigidBody3D
         _HeldJoint = new Generic6DofJoint3D();
         _HeldGrabbable = G;
 
-        //calculate the position to feed into the joint
-        Transform3D parentspaceHand = G.ParentRigidBody.GlobalTransform.Inverse() * GlobalTransform;
-        Vector3 grabPosition = parentspacePose.Origin - parentspaceHand.Origin;
 
 
-        //configure the joint
-        _HeldGrabbable.ParentRigidBody.AddChild(_HeldJoint);
+        //configure the joint's bodies, position and rotation
         _HeldJoint.NodeA = _HeldGrabbable.ParentRigidBody.GetPath();
         _HeldJoint.NodeB = this.GetPath();
+        ConfigureHeldJointPosition(G, parentspacePose);
+        ConfigureHeldJointRotation(G, parentspacePose);
 
+        //add the joint to the scene tree
+        _HeldGrabbable.ParentRigidBody.AddChild(_HeldJoint);
+
+    }
+    private void ConfigureHeldJointPosition(Grabbable G, Transform3D parentspacePose)
+    {
+        //calculate the position to feed into the joint
+        Vector3 parentspaceHandPos = G.ParentRigidBody.GlobalTransform.Inverse() * PalmGrabPoint.GlobalPosition;
+        Vector3 grabPosition = -parentspaceHandPos + parentspacePose.Origin;
+
+        //setting the linear limit to be at the grab position instead of the linear spring 
+        //provides results that better keeps the hand attatched to the body
         _HeldJoint.SetParamX(Generic6DofJoint3D.Param.LinearLowerLimit, grabPosition.X);
-        _HeldJoint.SetParamX(Generic6DofJoint3D.Param.LinearUpperLimit, grabPosition.X);
+        _HeldJoint.SetParamX(Generic6DofJoint3D.Param.LinearUpperLimit, grabPosition.X + 0.001f);
         _HeldJoint.SetParamY(Generic6DofJoint3D.Param.LinearLowerLimit, grabPosition.Y);
-        _HeldJoint.SetParamY(Generic6DofJoint3D.Param.LinearUpperLimit, grabPosition.Y);
+        _HeldJoint.SetParamY(Generic6DofJoint3D.Param.LinearUpperLimit, grabPosition.Y + 0.001f);
         _HeldJoint.SetParamZ(Generic6DofJoint3D.Param.LinearLowerLimit, grabPosition.Z);
-        _HeldJoint.SetParamZ(Generic6DofJoint3D.Param.LinearUpperLimit, grabPosition.Z);
+        _HeldJoint.SetParamZ(Generic6DofJoint3D.Param.LinearUpperLimit, grabPosition.Z + 0.001f);
+
+        //adding *some* spring does, however, do an even better job on top of that
+        _HeldJoint.SetParamX(Generic6DofJoint3D.Param.LinearSpringStiffness, _LinearSpringStiffness);
+        _HeldJoint.SetParamY(Generic6DofJoint3D.Param.LinearSpringStiffness, _LinearSpringStiffness);
+        _HeldJoint.SetParamZ(Generic6DofJoint3D.Param.LinearSpringStiffness, _LinearSpringStiffness);
+        _HeldJoint.SetParamX(Generic6DofJoint3D.Param.LinearSpringDamping, _LinearSpringDamping);
+        _HeldJoint.SetParamY(Generic6DofJoint3D.Param.LinearSpringDamping, _LinearSpringDamping);
+        _HeldJoint.SetParamZ(Generic6DofJoint3D.Param.LinearSpringDamping, _LinearSpringDamping);
+    }
+    private void ConfigureHeldJointRotation(Grabbable G, Transform3D parentspacePose)
+    {
+        //TODO this
     }
     private float CalculatePoseCost(Transform3D nearestPose)
     {
