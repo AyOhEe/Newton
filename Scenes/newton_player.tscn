@@ -230,6 +230,9 @@ shape = SubResource("BoxShape3D_y5b6f")
 [node name="PalmGrabPoint" type="Node3D" parent="PhysicsRig/LeftHand"]
 transform = Transform3D(0.146635, 0, -0.989191, 0, 1, 0, 0.989191, 0, 0.146635, 0.0159803, 0, -0.0719327)
 
+[node name="Axis Helper" parent="PhysicsRig/LeftHand/PalmGrabPoint" instance=ExtResource("10_pt675")]
+transform = Transform3D(0.03, 0, 0, 0, 0.03, 0, 0, 0, 0.03, 0, 0, 0)
+
 [node name="Axis Helper" parent="PhysicsRig/LeftHand" instance=ExtResource("10_pt675")]
 transform = Transform3D(0.03, 0, 0, 0, 0.03, 0, 0, 0, 0.03, 0, 0, 0)
 
@@ -249,6 +252,9 @@ shape = SubResource("BoxShape3D_y5b6f")
 
 [node name="PalmGrabPoint" type="Node3D" parent="PhysicsRig/RightHand"]
 transform = Transform3D(0.146083, 0, 0.989272, 0, 1, 0, -0.989272, 0, 0.146083, -0.016, 0, -0.072)
+
+[node name="Axis Helper" parent="PhysicsRig/RightHand/PalmGrabPoint" instance=ExtResource("10_pt675")]
+transform = Transform3D(0.03, 0, 0, 0, 0.03, 0, 0, 0, 0.03, 0, 0, 0)
 
 [node name="Axis Helper" parent="PhysicsRig/RightHand" instance=ExtResource("10_pt675")]
 transform = Transform3D(0.03, 0, 0, 0, 0.03, 0, 0, 0, 0.03, 0, 0, 0)
