@@ -45,8 +45,8 @@ public partial class HandCoreJoint : Node
 		requiredImpulse = requiredImpulse.LimitLength(_MaxImpulsePerSecond * (float)delta);
 
         //apply this to the hand, and apply the opposite to the core (consv. momentum)
-        _HandRB.ApplyCentralImpulse(requiredImpulse);
-        _CoreRB.ApplyCentralImpulse(-requiredImpulse);
+        _HandRB.LinearVelocity += requiredImpulse / _HandRB.Mass;
+        _CoreRB.LinearVelocity -= requiredImpulse / _CoreRB.Mass;
     }
 
 	private Vector3 CalculateDesiredHandVel(Vector3 wristPos)
