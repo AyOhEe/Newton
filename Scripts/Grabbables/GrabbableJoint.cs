@@ -22,7 +22,7 @@ public partial class GrabbableJoint : Node3D
 			_HandRB.AddCollisionExceptionWith(_GrabbableRB);
         }
 	}
-	~GrabbableJoint()
+	public void HandleDestruction()
 	{
 		if (_IgnoreCollision)
 		{
@@ -51,6 +51,8 @@ public partial class GrabbableJoint : Node3D
 		//position and rotation
 		_HandRB.GlobalBasis = _GrabbableRB.GlobalBasis * TargetRotation.Inverse();
 		_HandRB.GlobalPosition = _GrabbableRB.GlobalPosition - (_HandRB.GlobalBasis * TargetPosition);
+		_HandRB.LinearVelocity = Vector3.Zero; //if we don't do this, the hand doesn't know it's being held back
+		_HandRB.AngularVelocity = Vector3.Zero;
     }
 
 

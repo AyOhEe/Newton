@@ -72,6 +72,7 @@ public partial class PhysbodyHand : RigidBody3D
         {
             _HeldGrabbable = null;
 
+            _HeldJoint.HandleDestruction();
             _HeldJoint.QueueFree();
             _HeldJoint = null;
         }
