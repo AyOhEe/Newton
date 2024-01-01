@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://3716brh3f04n"]
+[gd_scene load_steps=27 format=3 uid="uid://3716brh3f04n"]
 
 [ext_resource type="PackedScene" uid="uid://cyb2l1vcms8n0" path="res://addons/Godot-OpenXR-Startup/OpenXR Startup/CameraRig.tscn" id="1_o26st"]
 [ext_resource type="PackedScene" uid="uid://c8ccdoo0nk1uy" path="res://addons/Godot-VR-Body-Solver/Scenes/SkeletalAvatar.tscn" id="2_0fogy"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" path="res://addons/Newton/Scripts/LocosphereMovement.cs" id="4_w6sr6"]
 [ext_resource type="Script" path="res://addons/Newton/Scripts/MoveWithChest.cs" id="6_0bglg"]
 [ext_resource type="PackedScene" uid="uid://gpmyah7fn7um" path="res://addons/Newton/Models/Hands/vr_glove_left_model_slim.tscn" id="9_861yw"]
+[ext_resource type="Script" path="res://addons/Newton/Scripts/HeadCollider.cs" id="9_e4qeh"]
 [ext_resource type="Script" path="res://addons/Newton/Scripts/HandCoreJoint.cs" id="9_gue12"]
 [ext_resource type="Script" path="res://addons/Newton/Scripts/IgnoreCollision.cs" id="10_avgum"]
 [ext_resource type="PackedScene" uid="uid://dk5nfpbuk3mvr" path="res://addons/Newton/Models/Hands/vr_glove_right_model_slim.tscn" id="10_mtn3l"]
@@ -175,16 +176,27 @@ shape = SubResource("BoxShape3D_gp6i1")
 mesh = SubResource("BoxMesh_8hf0b")
 skeleton = NodePath("../..")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="PhysicsRig/Core"]
+[node name="HeadCollision" type="CollisionShape3D" parent="PhysicsRig/Core" node_paths=PackedStringArray("_CameraRig", "_BodySolver", "_EyeMount", "_ChestMount")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.411492, -0.092548)
 shape = SubResource("CapsuleShape3D_oq1ph")
+script = ExtResource("9_e4qeh")
+_CameraRig = NodePath("../../../CameraRig")
+_BodySolver = NodePath("../../../BodySolver")
+_EyeMount = NodePath("EyeMount")
+_ChestMount = NodePath("../ChestMount")
 
-[node name="HeadMesh" type="MeshInstance3D" parent="PhysicsRig/Core/CollisionShape3D"]
+[node name="HeadMesh" type="MeshInstance3D" parent="PhysicsRig/Core/HeadCollision"]
 mesh = SubResource("CapsuleMesh_vcfel")
 skeleton = NodePath("../..")
 
+[node name="EyeMount" type="Node3D" parent="PhysicsRig/Core/HeadCollision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, -0.078)
+
+[node name="Axis Helper" parent="PhysicsRig/Core/HeadCollision/EyeMount" instance=ExtResource("10_pt675")]
+transform = Transform3D(0.03, 0, 0, 0, 0.03, 0, 0, 0, 0.03, 0, 0, 0)
+
 [node name="ChestMount" type="Node3D" parent="PhysicsRig/Core"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+transform = Transform3D(-1, -8.44439e-08, 2.26267e-08, -2.26267e-08, 0, -1, 8.44439e-08, -1, 2.98023e-08, 0, 0.25, 0)
 
 [node name="LHandCoreJoint" type="Node" parent="PhysicsRig/Core" node_paths=PackedStringArray("_CameraRig", "_BodySolver", "_HandRB", "_CoreRB")]
 script = ExtResource("9_gue12")
