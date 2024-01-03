@@ -14,6 +14,8 @@ public partial class PhysbodyHand : RigidBody3D
     private GrabbableJoint _HeldJoint = null;
 
 
+    private float _GripStrength;
+
 
     public void IntroduceGrabbable(Grabbable G)
     {
@@ -111,6 +113,11 @@ public partial class PhysbodyHand : RigidBody3D
         return PalmGrabPoint.GlobalPosition.DistanceTo(nearestPose.Origin);
     }
 
+    public float GetGripStrength()
+    {
+        return _GripStrength;
+    }
+
 
     public void OnButtonPressed(string name)
     {
@@ -139,6 +146,10 @@ public partial class PhysbodyHand : RigidBody3D
         if (name == "trigger") //TODO deadzone?
         {
             _HeldGrabbable?.SetToolPrimary(value);
+        }
+        if (name == "grip")
+        {
+            _GripStrength = value;
         }
     }
 }

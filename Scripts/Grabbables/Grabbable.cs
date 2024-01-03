@@ -4,6 +4,10 @@ using System;
 
 public abstract partial class Grabbable : Node3D
 {
+    [Signal] public delegate void OnGrabEnterEventHandler(PhysbodyHand hand);
+    [Signal] public delegate void OnGrabStayEventHandler(PhysbodyHand hand, float gripStrength);
+    [Signal] public delegate void OnGrabEndEventHandler(PhysbodyHand hand);
+
     [ExportCategory("Grabbable Settings")]
     [Export] public RigidBody3D ParentRigidBody { get; protected set; }
     [Export] public Array<Tool> Tools { get; protected set; }
@@ -30,11 +34,11 @@ public abstract partial class Grabbable : Node3D
     {
         if (_LeftHand != null)
         {
-            OnHandStay(_LeftHand);
+            OnHandStay(_LeftHand, _LeftHand.GetGripStrength());
         }
         if (_RightHand != null)
         {
-            OnHandStay(_RightHand);
+            OnHandStay(_RightHand, _RightHand.GetGripStrength());
         }
     }
 
@@ -54,6 +58,7 @@ public abstract partial class Grabbable : Node3D
             _RightHand = Hand;
         }
         Hand.IntroduceGrabbable(this);
+        EmitSignal(SignalName.OnGrabEnter, Hand);
     }
     public virtual void OnHandExit(PhysbodyHand Hand) 
     {
@@ -66,14 +71,16 @@ public abstract partial class Grabbable : Node3D
             _RightHand = null;
         }
         Hand.RemoveGrabbable(this);
+        EmitSignal(SignalName.OnGrabEnd, Hand);
     }
-    public virtual void OnHandStay(PhysbodyHand Hand) 
+    public virtual void OnHandStay(PhysbodyHand Hand, float GripStrength) 
     {
         if (_DebugMode)
         {
             _AxisHelperInstance.GlobalTransform = ParentRigidBody.GlobalTransform * CalculateGrabPose(Hand);
             _AxisHelperInstance.GlobalBasis *= Basis.Identity.Scaled(Vector3.One * 0.1f);
         }
+        EmitSignal(SignalName.OnGrabStay, Hand, GripStrength);
     }
 
     public void SetToolPrimary(float state)
