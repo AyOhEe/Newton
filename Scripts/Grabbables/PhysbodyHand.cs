@@ -70,6 +70,8 @@ public partial class PhysbodyHand : RigidBody3D
         //release what we're holding, if anything, and if we're allowed to
         if(_HeldGrabbable != null && _HeldGrabbable.Release(this))
         {
+            _HeldGrabbable.SetToolPrimary(0);
+            _HeldGrabbable.SetToolSecondary(0);
             _HeldGrabbable = null;
 
             _HeldJoint.HandleDestruction();
@@ -83,6 +85,8 @@ public partial class PhysbodyHand : RigidBody3D
     {
         //create the joint and store references for this grab
         _HeldGrabbable = G;
+        _HeldGrabbable.SetToolPrimary(0);
+        _HeldGrabbable.SetToolSecondary(0);
         _HeldJoint = new GrabbableJoint(this, _HeldGrabbable.ParentRigidBody);
 
         //configure the joint's position and rotation
@@ -114,12 +118,27 @@ public partial class PhysbodyHand : RigidBody3D
         {
             OnGrabStart();
         }
+        if (name == "by_button")
+        {
+            _HeldGrabbable?.SetToolSecondary(1);
+        }
     }
     public void OnButtonReleased(string name)
     {
         if (name == "grip_click")
         {
             OnGrabExit();
+        }
+        if (name == "by_button")
+        {
+            _HeldGrabbable?.SetToolSecondary(0);
+        }
+    }
+    public void OnFloatChanged(string name, float value)
+    {
+        if (name == "trigger") //TODO deadzone?
+        {
+            _HeldGrabbable?.SetToolPrimary(value);
         }
     }
 }

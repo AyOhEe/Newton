@@ -6,6 +6,7 @@ public abstract partial class Grabbable : Node3D
 {
     [ExportCategory("Grabbable Settings")]
     [Export] public RigidBody3D ParentRigidBody { get; protected set; }
+    [Export] public Array<Tool> Tools { get; protected set; }
     [Export] protected bool _DebugMode;
     [Export] protected PackedScene _AxisHelper;
 
@@ -72,6 +73,21 @@ public abstract partial class Grabbable : Node3D
         {
             _AxisHelperInstance.GlobalTransform = ParentRigidBody.GlobalTransform * CalculateGrabPose(Hand);
             _AxisHelperInstance.GlobalBasis *= Basis.Identity.Scaled(Vector3.One * 0.1f);
+        }
+    }
+
+    public void SetToolPrimary(float state)
+    {
+        foreach(Tool T in Tools)
+        {
+            T.SetPrimary(state);
+        }
+    }
+    public void SetToolSecondary(float state)
+    {
+        foreach (Tool T in Tools)
+        {
+            T.SetSecondary(state);
         }
     }
 
