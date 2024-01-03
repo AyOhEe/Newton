@@ -5,6 +5,10 @@ using System.Linq;
 
 public partial class PhysbodyHand : RigidBody3D
 {
+    [Signal] public delegate void OnGrabEnteredEventHandler(PhysbodyHand hand, Grabbable grabbable);
+    [Signal] public delegate void OnGrabStayEventHandler(PhysbodyHand hand, Grabbable grabbable, float gripStrength);
+    [Signal] public delegate void OnGrabEndEventHandler(PhysbodyHand hand, Grabbable grabbable);
+
     [Export] public bool IsLeftHanded { get; private set; }
     [Export] public Node3D PalmGrabPoint { get; private set; }
 
@@ -15,6 +19,15 @@ public partial class PhysbodyHand : RigidBody3D
 
 
     private float _GripStrength;
+
+
+    public override void _Process(double delta)
+    {
+        if (_HeldGrabbable != null)
+        {
+            EmitSignal(SignalName.OnGrabStay, this, _HeldGrabbable, GetGripStrength());
+        }
+    }
 
 
     public void IntroduceGrabbable(Grabbable G)
@@ -65,6 +78,7 @@ public partial class PhysbodyHand : RigidBody3D
         {
             //grab accepted, create the joint
             GrabObject(nearestGrabbable, nearestPose);
+            EmitSignal(SignalName.OnGrabEntered, this, nearestGrabbable);
         }
     }
     private void OnGrabExit()
@@ -72,6 +86,7 @@ public partial class PhysbodyHand : RigidBody3D
         //release what we're holding, if anything, and if we're allowed to
         if(_HeldGrabbable != null && _HeldGrabbable.Release(this))
         {
+            EmitSignal(SignalName.OnGrabEnd, this, _HeldGrabbable);
             _HeldGrabbable.SetToolPrimary(0);
             _HeldGrabbable.SetToolSecondary(0);
             _HeldGrabbable = null;
