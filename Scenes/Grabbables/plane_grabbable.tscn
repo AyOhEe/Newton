@@ -6,11 +6,10 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_ya1vw"]
 size = Vector3(0.3, 0.1, 0.3)
 
-[node name="PlaneGrabbable" type="Node3D" node_paths=PackedStringArray("ParentRigidBody")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
+[node name="PlaneGrabbable" type="Node3D" node_paths=PackedStringArray("Tools")]
 script = ExtResource("1_e6wjh")
 _Dimensions = Vector2(0.3, 0.3)
-ParentRigidBody = NodePath("")
+Tools = []
 _DebugMode = true
 _AxisHelper = ExtResource("2_53hqn")
 
