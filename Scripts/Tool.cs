@@ -5,12 +5,12 @@ public partial class Tool : Node
 {
     [Export] private float _ActivationThreshold;
 
-    [Signal] public delegate void PrimaryStartUseEventHandler();
-    [Signal] public delegate void PrimaryUseEventHandler(float strength);
-    [Signal] public delegate void PrimaryEndUseEventHandler();
-    [Signal] public delegate void SecondaryStartUseEventHandler();
-    [Signal] public delegate void SecondaryUseEventHandler(float strength);
-    [Signal] public delegate void SecondaryEndUseEventHandler();
+    [Signal] public delegate void PrimaryStartUseEventHandler(Tool tool);
+    [Signal] public delegate void PrimaryUseEventHandler(Tool tool, float strength);
+    [Signal] public delegate void PrimaryEndUseEventHandler(Tool tool);
+    [Signal] public delegate void SecondaryStartUseEventHandler(Tool tool);
+    [Signal] public delegate void SecondaryUseEventHandler(Tool tool, float strength);
+    [Signal] public delegate void SecondaryEndUseEventHandler(Tool tool);
 
     private float _PrimaryState;
     private float _LastPrimaryState;
@@ -21,28 +21,28 @@ public partial class Tool : Node
     {
         if (_LastPrimaryState < _ActivationThreshold && _PrimaryState >= _ActivationThreshold)
         {
-            EmitSignal(SignalName.PrimaryStartUse);
+            EmitSignal(SignalName.PrimaryStartUse, this);
         }
         if (_PrimaryState >= _ActivationThreshold)
         {
-            EmitSignal(SignalName.PrimaryUse, _PrimaryState);
+            EmitSignal(SignalName.PrimaryUse, this, _PrimaryState);
         }
         if (_PrimaryState < _ActivationThreshold && _LastPrimaryState >= _ActivationThreshold)
         {
-            EmitSignal(SignalName.PrimaryEndUse);
+            EmitSignal(SignalName.PrimaryEndUse, this);
         }
 
         if (_LastSecondaryState < _ActivationThreshold && _SecondaryState >= _ActivationThreshold)
         {
-            EmitSignal(SignalName.SecondaryStartUse);
+            EmitSignal(SignalName.SecondaryStartUse, this);
         }
         if (_SecondaryState >= _ActivationThreshold)
         {
-            EmitSignal(SignalName.SecondaryUse, _SecondaryState);
+            EmitSignal(SignalName.SecondaryUse, this, _SecondaryState);
         }
         if (_SecondaryState < _ActivationThreshold && _LastSecondaryState >= _ActivationThreshold)
         {
-            EmitSignal(SignalName.SecondaryEndUse);
+            EmitSignal(SignalName.SecondaryEndUse, this);
         }
 
         _LastPrimaryState = _PrimaryState;
