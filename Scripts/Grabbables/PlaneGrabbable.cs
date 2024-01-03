@@ -16,7 +16,9 @@ public partial class PlaneGrabbable : Grabbable
         Vector3 worldspacePoint = GlobalTransform * projectedPalmPoint;
         Vector3 parentspacePoint = ParentRigidBody.GlobalTransform.Inverse() * worldspacePoint;
 
-        Basis worldspaceBasis = GlobalBasis * Basis.LookingAt(Vector3.Down, Vector3.Forward);
+        Vector3 localRight = GlobalBasis.Inverse() * Hand.PalmGrabPoint.GlobalBasis * Vector3.Right;
+        Vector3 projectedRight = new Plane(Vector3.Up).Project(localRight);
+        Basis worldspaceBasis = GlobalBasis * Basis.LookingAt(Vector3.Down, projectedRight.Cross(Vector3.Down));
         Basis parentspaceBasis = ParentRigidBody.GlobalBasis.Inverse() * worldspaceBasis;
 
         return new Transform3D(parentspaceBasis, parentspacePoint);
