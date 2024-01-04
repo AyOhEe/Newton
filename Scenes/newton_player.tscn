@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://3716brh3f04n"]
+[gd_scene load_steps=28 format=3 uid="uid://3716brh3f04n"]
 
 [ext_resource type="PackedScene" uid="uid://cyb2l1vcms8n0" path="res://addons/Godot-OpenXR-Startup/OpenXR Startup/CameraRig.tscn" id="1_o26st"]
 [ext_resource type="PackedScene" uid="uid://c8ccdoo0nk1uy" path="res://addons/Godot-VR-Body-Solver/Scenes/SkeletalAvatar.tscn" id="2_0fogy"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" path="res://addons/Newton/Scripts/Player/CoreRB.cs" id="4_jlr6y"]
 [ext_resource type="Script" path="res://addons/Newton/Scripts/Player/LocosphereMovement.cs" id="4_w6sr6"]
 [ext_resource type="Script" path="res://addons/Newton/Scripts/Player/MoveWithChest.cs" id="6_0bglg"]
+[ext_resource type="Script" path="res://addons/Newton/Scripts/Grabbables/GrabCoordinator.cs" id="6_58baa"]
 [ext_resource type="PackedScene" uid="uid://gpmyah7fn7um" path="res://addons/Newton/Models/Hands/vr_glove_left_model_slim.tscn" id="9_861yw"]
 [ext_resource type="Script" path="res://addons/Newton/Scripts/Player/HeadCollider.cs" id="9_e4qeh"]
 [ext_resource type="Script" path="res://addons/Newton/Scripts/Player/HandCoreJoint.cs" id="9_gue12"]
@@ -91,6 +92,9 @@ script = ExtResource("6_0bglg")
 _BodySolver = NodePath("../../BodySolver")
 _CameraRig = NodePath("../../CameraRig")
 _RigRigidbodies = [NodePath("../Fender"), NodePath("../Core"), NodePath("../Locosphere")]
+
+[node name="GrabCoordinator" type="Node" parent="PhysicsRig"]
+script = ExtResource("6_58baa")
 
 [node name="Locosphere" type="RigidBody3D" parent="PhysicsRig" node_paths=PackedStringArray("_CameraRig", "_BodySolver")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.956946, 0)
@@ -224,7 +228,7 @@ script = ExtResource("10_avgum")
 A = NodePath("..")
 B = NodePath("../../Locosphere")
 
-[node name="LeftHand" type="RigidBody3D" parent="PhysicsRig" node_paths=PackedStringArray("PalmGrabPoint")]
+[node name="LeftHand" type="RigidBody3D" parent="PhysicsRig" node_paths=PackedStringArray("PalmGrabPoint", "_GrabCoordinator")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.085, 0.056, 0)
 mass = 2.0
 physics_material_override = SubResource("PhysicsMaterial_wuh51")
@@ -232,6 +236,7 @@ gravity_scale = 0.2
 script = ExtResource("11_bonw1")
 IsLeftHanded = true
 PalmGrabPoint = NodePath("PalmGrabPoint")
+_GrabCoordinator = NodePath("../GrabCoordinator")
 
 [node name="vr_glove_left_model_slim" parent="PhysicsRig/LeftHand" instance=ExtResource("9_861yw")]
 
@@ -248,13 +253,14 @@ transform = Transform3D(0.03, 0, 0, 0, 0.03, 0, 0, 0, 0.03, 0, 0, 0)
 [node name="Axis Helper" parent="PhysicsRig/LeftHand" instance=ExtResource("10_pt675")]
 transform = Transform3D(0.03, 0, 0, 0, 0.03, 0, 0, 0, 0.03, 0, 0, 0)
 
-[node name="RightHand" type="RigidBody3D" parent="PhysicsRig" node_paths=PackedStringArray("PalmGrabPoint")]
+[node name="RightHand" type="RigidBody3D" parent="PhysicsRig" node_paths=PackedStringArray("PalmGrabPoint", "_GrabCoordinator")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.09, 0.056, 0)
 mass = 2.0
 physics_material_override = SubResource("PhysicsMaterial_wuh51")
 gravity_scale = 0.2
 script = ExtResource("11_bonw1")
 PalmGrabPoint = NodePath("PalmGrabPoint")
+_GrabCoordinator = NodePath("../GrabCoordinator")
 
 [node name="vr_glove_right_model_slim" parent="PhysicsRig/RightHand" instance=ExtResource("10_mtn3l")]
 

@@ -9,8 +9,10 @@ public partial class PhysbodyHand : RigidBody3D
     [Signal] public delegate void OnGrabStayEventHandler(PhysbodyHand hand, Grabbable grabbable, float gripStrength);
     [Signal] public delegate void OnGrabEndEventHandler(PhysbodyHand hand, Grabbable grabbable);
 
+
     [Export] public bool IsLeftHanded { get; private set; }
     [Export] public Node3D PalmGrabPoint { get; private set; }
+    [Export] private GrabCoordinator _GrabCoordinator;
 
 
     private Array<Grabbable> _NearbyGrabbables = new Array<Grabbable>();
@@ -91,9 +93,7 @@ public partial class PhysbodyHand : RigidBody3D
             _HeldGrabbable.SetToolSecondary(0);
             _HeldGrabbable = null;
 
-            _HeldJoint.HandleDestruction();
-            _HeldJoint.QueueFree();
-            _HeldJoint = null;
+            _GrabCoordinator.DestroyJoint(this);
         }
     }
 
@@ -104,24 +104,9 @@ public partial class PhysbodyHand : RigidBody3D
         _HeldGrabbable = G;
         _HeldGrabbable.SetToolPrimary(0);
         _HeldGrabbable.SetToolSecondary(0);
-        _HeldJoint = new GrabbableJoint(this, _HeldGrabbable.ParentRigidBody);
 
-        //configure the joint's position and rotation
-        ConfigureHeldJointRotation(G, parentspacePose);
-        ConfigureHeldJointPosition(G, parentspacePose);
-
-        //add the joint to the scene tree
-        _HeldGrabbable.ParentRigidBody.AddChild(_HeldJoint);
-    }
-    private void ConfigureHeldJointPosition(Grabbable G, Transform3D parentspacePose)
-    {
-        _HeldJoint.TargetPosition = PalmGrabPoint.Position + (_HeldJoint.TargetRotation * -parentspacePose.Origin);
-
-    }
-    private void ConfigureHeldJointRotation(Grabbable G, Transform3D parentspacePose)
-    {
-        _HeldJoint.TargetRotation = PalmGrabPoint.Basis * parentspacePose.Basis.Inverse();
-
+        //tell the coordinator to create the joint
+        _GrabCoordinator.CreateJoint(_HeldGrabbable, this, parentspacePose);
     }
     private float CalculatePoseCost(Transform3D nearestPose)
     {

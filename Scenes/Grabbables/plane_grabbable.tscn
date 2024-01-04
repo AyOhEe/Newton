@@ -16,7 +16,6 @@ _AxisHelper = ExtResource("2_53hqn")
 [node name="Area3D" type="Area3D" parent="."]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
 shape = SubResource("BoxShape3D_ya1vw")
 
 [connection signal="body_entered" from="Area3D" to="." method="OnBodyEntered"]

@@ -3,31 +3,20 @@ using System;
 
 public partial class GrabbableJoint : Node3D
 {
-	[Export] private PhysbodyHand _HandRB;
-	[Export] private RigidBody3D _GrabbableRB;
-	[Export] public Vector3 TargetPosition;
-	[Export] public Basis TargetRotation;
+	public PhysbodyHand _HandRB { get; private set; }
+	public RigidBody3D _GrabbableRB { get; private set; }
+    public Vector3 TargetPosition;
+	public Basis TargetRotation;
 
-	private bool _IgnoreCollision;
-
-
-    public GrabbableJoint(PhysbodyHand hand, RigidBody3D grabbable, bool ignoreCollision = true)
+    public GrabbableJoint(PhysbodyHand hand, RigidBody3D grabbable)
 	{
 		_HandRB = hand;
 		_GrabbableRB = grabbable;
-		_IgnoreCollision = ignoreCollision;
-
-		if (ignoreCollision)
-		{
-			_HandRB.AddCollisionExceptionWith(_GrabbableRB);
-        }
+		_HandRB.AddCollisionExceptionWith(_GrabbableRB);
 	}
 	public void HandleDestruction()
 	{
-		if (_IgnoreCollision)
-		{
-			_HandRB.RemoveCollisionExceptionWith(_GrabbableRB);
-		}
+		_HandRB.RemoveCollisionExceptionWith(_GrabbableRB);
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -41,9 +30,6 @@ public partial class GrabbableJoint : Node3D
 		{
             HandleNonFrozenGrab(delta);
         }
-
-
-
 	}
     private void HandleFrozenGrab(double delta)
 	{
@@ -58,6 +44,10 @@ public partial class GrabbableJoint : Node3D
 
     private void HandleNonFrozenGrab(double delta)
 	{
+        //TODO angular momentum stuff
+        _GrabbableRB.GlobalBasis = _HandRB.GlobalBasis * TargetRotation;
+
+
         //the bodies are effectively fused right now. as such, position them together, moving them
         //inversely proportional to their masses
         Vector3 grabbableDesiredPos = _HandRB.GlobalPosition + (_HandRB.GlobalBasis * TargetPosition);
@@ -71,9 +61,5 @@ public partial class GrabbableJoint : Node3D
         Vector3 targetVel = totalMomentum / (_HandRB.Mass + _GrabbableRB.Mass);
         _HandRB.LinearVelocity = targetVel;
         _GrabbableRB.LinearVelocity = targetVel;
-
-
-        //TODO angular momentum stuff
-        _GrabbableRB.GlobalBasis = _HandRB.GlobalBasis * TargetRotation;
     }
 }
