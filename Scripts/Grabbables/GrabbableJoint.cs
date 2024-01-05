@@ -58,8 +58,8 @@ public partial class GrabbableJoint : Node3D
 
         //we'll need these for the upcoming calculations
         Basis totalInertia = AddBases(_HandRB.GetInverseInertiaTensor().Inverse(), _GrabbableRB.GetInverseInertiaTensor().Inverse());
-        Vector3 handCOM = _HandRB.GlobalBasis * _HandRB.CenterOfMass;
-        Vector3 grabbableCOM = _GrabbableRB.GlobalBasis * _GrabbableRB.CenterOfMass;
+        Vector3 handCOM = _HandRB.GlobalTransform * _HandRB.CenterOfMass;
+        Vector3 grabbableCOM = _GrabbableRB.GlobalTransform * _GrabbableRB.CenterOfMass;
         Vector3 COM = ((handCOM * _HandRB.Mass) + (grabbableCOM * _GrabbableRB.Mass)) / (_HandRB.Mass + _GrabbableRB.Mass);
 
         //the momentum of the COM will be the combined linear momentum of the two bodies. from there, velocity
@@ -70,8 +70,8 @@ public partial class GrabbableJoint : Node3D
         //https://www.physicsforums.com/threads/total-angular-momentum-of-2-connected-falling-bodies.566219/
         Vector3 angularMomentum = (_HandRB.GetInverseInertiaTensor().Inverse() * _HandRB.AngularVelocity)
             + (_GrabbableRB.GetInverseInertiaTensor().Inverse() * _GrabbableRB.AngularVelocity)
-            + (_HandRB.Mass * (handCOM - COM).Cross(COMVel - _HandRB.LinearVelocity))
-            + (_GrabbableRB.Mass * (grabbableCOM - COM).Cross(COMVel - _GrabbableRB.LinearVelocity));
+            + (_HandRB.Mass * (handCOM - COM).Cross(_HandRB.LinearVelocity - COMVel))
+            + (_GrabbableRB.Mass * (grabbableCOM - COM).Cross(_GrabbableRB.LinearVelocity - COMVel));
         Vector3 angularVelocity = totalInertia.Inverse() * angularMomentum;
 
         //the bodies will have the same angular velocity as they are joined together perfectly

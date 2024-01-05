@@ -83,9 +83,9 @@ public partial class TwoHandedGrabbableJoint : Node
         //we'll need these for the upcoming calculations
         Basis totalInertia = AddBases(_LeftHandRB.GetInverseInertiaTensor().Inverse(), _RightHandRB.GetInverseInertiaTensor().Inverse());
         totalInertia = AddBases(totalInertia, _GrabbableRB.GetInverseInertiaTensor().Inverse());
-        Vector3 lHandCOM = _LeftHandRB.GlobalBasis * _LeftHandRB.CenterOfMass;
-        Vector3 rHandCOM = _RightHandRB.GlobalBasis * _RightHandRB.CenterOfMass;
-        Vector3 grabbableCOM = _GrabbableRB.GlobalBasis * _GrabbableRB.CenterOfMass;
+        Vector3 lHandCOM = _LeftHandRB.GlobalTransform * _LeftHandRB.CenterOfMass;
+        Vector3 rHandCOM = _RightHandRB.GlobalTransform * _RightHandRB.CenterOfMass;
+        Vector3 grabbableCOM = _GrabbableRB.GlobalTransform * _GrabbableRB.CenterOfMass;
         Vector3 COM = ((rHandCOM * _RightHandRB.Mass) + (grabbableCOM * _GrabbableRB.Mass) + (lHandCOM * _LeftHandRB.Mass)) 
             / (_LeftHandRB.Mass + _RightHandRB.Mass + _GrabbableRB.Mass);
 
@@ -101,9 +101,9 @@ public partial class TwoHandedGrabbableJoint : Node
         Vector3 angularMomentum = (_LeftHandRB.GetInverseInertiaTensor().Inverse() * _LeftHandRB.AngularVelocity)
             + (_RightHandRB.GetInverseInertiaTensor().Inverse() * _RightHandRB.AngularVelocity)
             + (_GrabbableRB.GetInverseInertiaTensor().Inverse() * _GrabbableRB.AngularVelocity)
-            + (_LeftHandRB.Mass * (lHandCOM - COM).Cross(COMVel - _LeftHandRB.LinearVelocity))
-            + (_RightHandRB.Mass * (rHandCOM - COM).Cross(COMVel - _RightHandRB.LinearVelocity))
-            + (_GrabbableRB.Mass * (grabbableCOM - COM).Cross(COMVel - _GrabbableRB.LinearVelocity));
+            + (_LeftHandRB.Mass * (lHandCOM - COM).Cross(_LeftHandRB.LinearVelocity - COMVel))
+            + (_RightHandRB.Mass * (rHandCOM - COM).Cross(_RightHandRB.LinearVelocity - COMVel))
+            + (_GrabbableRB.Mass * (grabbableCOM - COM).Cross(_GrabbableRB.LinearVelocity - COMVel));
         Vector3 angularVelocity = totalInertia.Inverse() * angularMomentum;
 
         //the bodies will have the same angular velocity as they are joined together perfectly
