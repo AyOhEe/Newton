@@ -53,19 +53,6 @@ public partial class TwoHandedGrabbableJoint : Node
 
     private void HandleNonFrozenGrab(double delta)
     {
-        //TODO angular momentum stuff
-
-
-        //TODO remove this once the angular momentum calculations work
-        Quaternion lRot = (_LeftHandRB.GlobalBasis * _LeftTargetRotation).GetRotationQuaternion();
-        Quaternion rRot = (_RightHandRB.GlobalBasis * _RightTargetRotation).GetRotationQuaternion();
-        Quaternion lerpedRot = lRot.Slerp(rRot, 0.5f);
-        _GrabbableRB.GlobalBasis = new Basis(lerpedRot);
-        _LeftHandRB.GlobalBasis = _GrabbableRB.GlobalBasis * _LeftTargetRotation.Inverse();
-        _RightHandRB.GlobalBasis = _GrabbableRB.GlobalBasis * _RightTargetRotation.Inverse();
-
-
-
         //the bodies are effectively fused right now. as such, position them together, moving them
         //inversely proportional to their masses
         Vector3 lGrabbableDesiredPos = _LeftHandRB.GlobalPosition + (_LeftHandRB.GlobalBasis * _LeftTargetPosition);
@@ -83,13 +70,56 @@ public partial class TwoHandedGrabbableJoint : Node
         _RightHandRB.GlobalPosition = _GrabbableRB.GlobalPosition - (_RightHandRB.GlobalBasis * _RightTargetPosition);
 
 
-        //their velocities must also be equal. average them based on total momentum
-        Vector3 totalMomentum = (_LeftHandRB.LinearVelocity * _LeftHandRB.Mass)
+        //TODO basis should be set proportional to the inertia of the objects in question
+        Quaternion lRot = (_LeftHandRB.GlobalBasis * _LeftTargetRotation).GetRotationQuaternion();
+        Quaternion rRot = (_RightHandRB.GlobalBasis * _RightTargetRotation).GetRotationQuaternion();
+        Quaternion lerpedRot = lRot.Slerp(rRot, 0.5f);
+        _GrabbableRB.GlobalBasis = new Basis(lerpedRot);
+        _LeftHandRB.GlobalBasis = _GrabbableRB.GlobalBasis * _LeftTargetRotation.Inverse();
+        _RightHandRB.GlobalBasis = _GrabbableRB.GlobalBasis * _RightTargetRotation.Inverse();
+
+
+
+        //we'll need these for the upcoming calculations
+        Basis totalInertia = AddBases(_LeftHandRB.GetInverseInertiaTensor().Inverse(), _RightHandRB.GetInverseInertiaTensor().Inverse());
+        totalInertia = AddBases(totalInertia, _GrabbableRB.GetInverseInertiaTensor().Inverse());
+        Vector3 lHandCOM = _LeftHandRB.GlobalBasis * _LeftHandRB.CenterOfMass;
+        Vector3 rHandCOM = _RightHandRB.GlobalBasis * _RightHandRB.CenterOfMass;
+        Vector3 grabbableCOM = _GrabbableRB.GlobalBasis * _GrabbableRB.CenterOfMass;
+        Vector3 COM = ((rHandCOM * _RightHandRB.Mass) + (grabbableCOM * _GrabbableRB.Mass) + (lHandCOM * _LeftHandRB.Mass)) 
+            / (_LeftHandRB.Mass + _RightHandRB.Mass + _GrabbableRB.Mass);
+
+        //the momentum of the COM will be the combined linear momentum of the three bodies. from there, velocity
+        Vector3 COMMomentum = (_LeftHandRB.LinearVelocity * _LeftHandRB.Mass) 
             + (_RightHandRB.LinearVelocity * _RightHandRB.Mass)
             + (_GrabbableRB.LinearVelocity * _GrabbableRB.Mass);
-        Vector3 targetVel = totalMomentum / (_LeftHandRB.Mass + _RightHandRB.Mass + _GrabbableRB.Mass);
-        _LeftHandRB.LinearVelocity = targetVel;
-        _RightHandRB.LinearVelocity = targetVel;
-        _GrabbableRB.LinearVelocity = targetVel;
+        Vector3 COMVel = COMMomentum / (_LeftHandRB.Mass + _RightHandRB.Mass + _GrabbableRB.Mass);
+
+
+        //https://www.physicsforums.com/threads/total-angular-momentum-of-2-connected-falling-bodies.566219/
+        //not quite the same thing, but extending the principle
+        Vector3 angularMomentum = (_LeftHandRB.GetInverseInertiaTensor().Inverse() * _LeftHandRB.AngularVelocity)
+            + (_RightHandRB.GetInverseInertiaTensor().Inverse() * _RightHandRB.AngularVelocity)
+            + (_GrabbableRB.GetInverseInertiaTensor().Inverse() * _GrabbableRB.AngularVelocity)
+            + (_LeftHandRB.Mass * (lHandCOM - COM).Cross(COMVel - _LeftHandRB.LinearVelocity))
+            + (_RightHandRB.Mass * (rHandCOM - COM).Cross(COMVel - _RightHandRB.LinearVelocity))
+            + (_GrabbableRB.Mass * (grabbableCOM - COM).Cross(COMVel - _GrabbableRB.LinearVelocity));
+        Vector3 angularVelocity = totalInertia.Inverse() * angularMomentum;
+
+        //the bodies will have the same angular velocity as they are joined together perfectly
+        _GrabbableRB.AngularVelocity = angularVelocity;
+        _LeftHandRB.AngularVelocity = angularVelocity;
+        _RightHandRB.AngularVelocity = angularVelocity;
+
+
+        //from COM velocity and angular velocity, we can calculate the linear velocity
+        _LeftHandRB.LinearVelocity = COMVel + (lHandCOM - COM).Cross(angularVelocity);
+        _RightHandRB.LinearVelocity = COMVel + (rHandCOM - COM).Cross(angularVelocity);
+        _GrabbableRB.LinearVelocity = COMVel + (grabbableCOM - COM).Cross(angularVelocity);
+    }
+
+    public static Basis AddBases(Basis left, Basis right)
+    {
+        return new Basis(left.Column0 + right.Column0, left.Column1 + right.Column1, left.Column2 + right.Column2);
     }
 }
