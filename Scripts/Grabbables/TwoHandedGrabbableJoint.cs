@@ -54,12 +54,16 @@ public partial class TwoHandedGrabbableJoint : Node
     private void HandleNonFrozenGrab(double delta)
     {
         //TODO angular momentum stuff
+
+
+        //TODO remove this once the angular momentum calculations work
         Quaternion lRot = (_LeftHandRB.GlobalBasis * _LeftTargetRotation).GetRotationQuaternion();
         Quaternion rRot = (_RightHandRB.GlobalBasis * _RightTargetRotation).GetRotationQuaternion();
         Quaternion lerpedRot = lRot.Slerp(rRot, 0.5f);
         _GrabbableRB.GlobalBasis = new Basis(lerpedRot);
         _LeftHandRB.GlobalBasis = _GrabbableRB.GlobalBasis * _LeftTargetRotation.Inverse();
         _RightHandRB.GlobalBasis = _GrabbableRB.GlobalBasis * _RightTargetRotation.Inverse();
+
 
 
         //the bodies are effectively fused right now. as such, position them together, moving them
