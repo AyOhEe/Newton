@@ -81,13 +81,11 @@ public partial class TwoHandedGrabbableJoint : Node
 
 
         //we'll need these for the upcoming calculations
-        Basis totalInertia = AddBases(_LeftHandRB.GetInverseInertiaTensor().Inverse(), _RightHandRB.GetInverseInertiaTensor().Inverse());
-        totalInertia = AddBases(totalInertia, _GrabbableRB.GetInverseInertiaTensor().Inverse());
         Vector3 lHandCOM = _LeftHandRB.GlobalTransform * _LeftHandRB.CenterOfMass;
         Vector3 rHandCOM = _RightHandRB.GlobalTransform * _RightHandRB.CenterOfMass;
         Vector3 grabbableCOM = _GrabbableRB.GlobalTransform * _GrabbableRB.CenterOfMass;
-        Vector3 COM = ((rHandCOM * _RightHandRB.Mass) + (grabbableCOM * _GrabbableRB.Mass) + (lHandCOM * _LeftHandRB.Mass)) 
-            / (_LeftHandRB.Mass + _RightHandRB.Mass + _GrabbableRB.Mass);
+        Vector3 COM = PhysicsHelpers.CalculateCentreOfMass(_LeftHandRB, _RightHandRB, _GrabbableRB);
+        Basis totalInertia = PhysicsHelpers.CombineInertiaTensors(COM, _LeftHandRB, _RightHandRB, _GrabbableRB);
 
         //the momentum of the COM will be the combined linear momentum of the three bodies. from there, velocity
         Vector3 COMMomentum = (_LeftHandRB.LinearVelocity * _LeftHandRB.Mass) 

@@ -57,10 +57,10 @@ public partial class GrabbableJoint : Node3D
 
 
         //we'll need these for the upcoming calculations
-        Basis totalInertia = AddBases(_HandRB.GetInverseInertiaTensor().Inverse(), _GrabbableRB.GetInverseInertiaTensor().Inverse());
         Vector3 handCOM = _HandRB.GlobalTransform * _HandRB.CenterOfMass;
         Vector3 grabbableCOM = _GrabbableRB.GlobalTransform * _GrabbableRB.CenterOfMass;
-        Vector3 COM = ((handCOM * _HandRB.Mass) + (grabbableCOM * _GrabbableRB.Mass)) / (_HandRB.Mass + _GrabbableRB.Mass);
+        Vector3 COM = PhysicsHelpers.CalculateCentreOfMass(_HandRB, _GrabbableRB);
+        Basis totalInertia = PhysicsHelpers.CombineInertiaTensors(COM, _HandRB, _GrabbableRB);
 
         //the momentum of the COM will be the combined linear momentum of the two bodies. from there, velocity
         Vector3 COMMomentum = (_HandRB.LinearVelocity * _HandRB.Mass) + (_GrabbableRB.LinearVelocity * _GrabbableRB.Mass);
@@ -83,9 +83,56 @@ public partial class GrabbableJoint : Node3D
         _HandRB.LinearVelocity = COMVel + (handCOM - COM).Cross(angularVelocity);
         _GrabbableRB.LinearVelocity = COMVel + (grabbableCOM - COM).Cross(angularVelocity);
     }
+}
+
+public static class PhysicsHelpers
+{
+    public static Vector3 CalculateCentreOfMass(params RigidBody3D[] bodies)
+    {
+        Vector3 weightedTotal = Vector3.Zero;
+        float totalMass = 0;
+
+        foreach (RigidBody3D body in bodies)
+        {
+            totalMass += body.Mass;
+            weightedTotal += body.GlobalTransform * body.CenterOfMass * body.Mass;
+        }
+
+        return weightedTotal / totalMass;
+    }
+
+    public static Basis CombineInertiaTensors(Vector3 COM, params RigidBody3D[] bodies)
+    {
+        Basis inertia = new Basis(); //all zeros
+
+        foreach (RigidBody3D body in bodies)
+        {
+            //https://en.wikipedia.org/wiki/Moment_of_inertia#Inertia_tensor_of_translation
+            inertia = PhysicsHelpers.AddBases(inertia, body.GetInverseInertiaTensor().Inverse());
+
+            Vector3 relativePosition = (body.GlobalTransform * body.CenterOfMass) - COM;
+            Basis outerProduct = PhysicsHelpers.OuterProduct(relativePosition, relativePosition);
+            Basis scaledIdentity = Basis.Identity.Scaled(Vector3.One * relativePosition.LengthSquared());
+            Basis difference = PhysicsHelpers.SubBases(scaledIdentity, outerProduct);
+            inertia = PhysicsHelpers.AddBases(inertia, difference.Scaled(Vector3.One * body.Mass));
+        }
+
+        return inertia;
+    }
+
+    public static Basis OuterProduct(Vector3 l, Vector3 r)
+    {
+        return new Basis(l.X * r.X, l.X * r.Y, l.X * r.Z,
+                         l.Y * r.X, l.Y * r.Y, l.Y * r.Z,
+                         l.Z * r.X, l.Z * r.Y, l.Z * r.Z);
+    }
 
     public static Basis AddBases(Basis left, Basis right)
     {
         return new Basis(left.Column0 + right.Column0, left.Column1 + right.Column1, left.Column2 + right.Column2);
+    }
+    public static Basis SubBases(Basis left, Basis right)
+    {
+        return new Basis(left.Column0 - right.Column0, left.Column1 - right.Column1, left.Column2 - right.Column2);
     }
 }
