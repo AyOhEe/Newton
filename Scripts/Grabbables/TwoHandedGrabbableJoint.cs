@@ -53,6 +53,12 @@ public partial class TwoHandedGrabbableJoint : Node
 
     private void HandleNonFrozenGrab(double delta)
     {
+        //we need to calculate the local inertia tensor before rotating any rigidbody
+        Basis leftHandIT = PhysicsHelpers.GetLocalInertiaTensor(_LeftHandRB);
+        Basis rightHandIT = PhysicsHelpers.GetLocalInertiaTensor(_RightHandRB);
+        Basis grabbableIT = PhysicsHelpers.GetLocalInertiaTensor(_GrabbableRB);
+
+
         //the bodies are effectively fused right now. as such, position them together, moving them
         //inversely proportional to their masses
         Vector3 lGrabbableDesiredPos = _LeftHandRB.GlobalPosition + (_LeftHandRB.GlobalBasis * _LeftTargetPosition);
@@ -79,13 +85,22 @@ public partial class TwoHandedGrabbableJoint : Node
         _RightHandRB.GlobalBasis = _GrabbableRB.GlobalBasis * _RightTargetRotation.Inverse();
 
 
+        //now that we've applied our rotations, recalculate the inertia tensors
+        leftHandIT = PhysicsHelpers.RotateInertiaTensor(leftHandIT, _LeftHandRB.GlobalBasis);
+        rightHandIT = PhysicsHelpers.RotateInertiaTensor(rightHandIT, _RightHandRB.GlobalBasis);
+        grabbableIT = PhysicsHelpers.RotateInertiaTensor(grabbableIT, _GrabbableRB.GlobalBasis);
+
 
         //we'll need these for the upcoming calculations
         Vector3 lHandCOM = _LeftHandRB.GlobalTransform * _LeftHandRB.CenterOfMass;
         Vector3 rHandCOM = _RightHandRB.GlobalTransform * _RightHandRB.CenterOfMass;
         Vector3 grabbableCOM = _GrabbableRB.GlobalTransform * _GrabbableRB.CenterOfMass;
         Vector3 COM = PhysicsHelpers.CalculateCentreOfMass(_LeftHandRB, _RightHandRB, _GrabbableRB);
-        Basis totalInertia = PhysicsHelpers.CombineInertiaTensors(COM, _LeftHandRB, _RightHandRB, _GrabbableRB);
+        Basis totalInertia = PhysicsHelpers.CombineInertiaTensors(
+            COM,
+            new RigidBody3D[] { _LeftHandRB, _RightHandRB, _GrabbableRB },
+            new Basis[] { leftHandIT, rightHandIT, grabbableIT }
+        );
 
         //the momentum of the COM will be the combined linear momentum of the three bodies. from there, velocity
         Vector3 COMMomentum = (_LeftHandRB.LinearVelocity * _LeftHandRB.Mass) 
@@ -96,9 +111,9 @@ public partial class TwoHandedGrabbableJoint : Node
 
         //https://www.physicsforums.com/threads/total-angular-momentum-of-2-connected-falling-bodies.566219/
         //not quite the same thing, but extending the principle
-        Vector3 angularMomentum = (_LeftHandRB.GetInverseInertiaTensor().Inverse() * _LeftHandRB.AngularVelocity)
-            + (_RightHandRB.GetInverseInertiaTensor().Inverse() * _RightHandRB.AngularVelocity)
-            + (_GrabbableRB.GetInverseInertiaTensor().Inverse() * _GrabbableRB.AngularVelocity)
+        Vector3 angularMomentum = (leftHandIT * _LeftHandRB.AngularVelocity)
+            + (rightHandIT * _RightHandRB.AngularVelocity)
+            + (grabbableIT * _GrabbableRB.AngularVelocity)
             + (_LeftHandRB.Mass * (lHandCOM - COM).Cross(_LeftHandRB.LinearVelocity - COMVel))
             + (_RightHandRB.Mass * (rHandCOM - COM).Cross(_RightHandRB.LinearVelocity - COMVel))
             + (_GrabbableRB.Mass * (grabbableCOM - COM).Cross(_GrabbableRB.LinearVelocity - COMVel));
