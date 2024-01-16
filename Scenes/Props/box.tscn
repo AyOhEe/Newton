@@ -1,0 +1,86 @@
+[gd_scene load_steps=6 format=3 uid="uid://idm2saafp1gy"]
+
+[ext_resource type="PackedScene" uid="uid://bedwkal2e0vis" path="res://addons/Newton/Scenes/Grabbables/plane_grabbable.tscn" id="1_xo4sr"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2wq13"]
+albedo_color = Color(1, 0.278431, 0.290196, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ylolh"]
+material = SubResource("StandardMaterial3D_2wq13")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bsopv"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0y2it"]
+size = Vector3(1, 0.1, 1)
+
+[node name="Box" type="RigidBody3D"]
+mass = 4.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_ylolh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_bsopv")
+
+[node name="Grabbables" type="Node3D" parent="."]
+
+[node name="PlaneGrabbable" parent="Grabbables" node_paths=PackedStringArray("ParentRigidBody") instance=ExtResource("1_xo4sr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+_Dimensions = Vector2(0.9, 0.9)
+ParentRigidBody = NodePath("../..")
+_DebugMode = false
+
+[node name="CollisionShape3D" parent="Grabbables/PlaneGrabbable/Area3D" index="0"]
+shape = SubResource("BoxShape3D_0y2it")
+
+[node name="PlaneGrabbable2" parent="Grabbables" node_paths=PackedStringArray("ParentRigidBody") instance=ExtResource("1_xo4sr")]
+transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, -0.5, 0)
+_Dimensions = Vector2(0.9, 0.9)
+ParentRigidBody = NodePath("../..")
+_DebugMode = false
+
+[node name="CollisionShape3D" parent="Grabbables/PlaneGrabbable2/Area3D" index="0"]
+shape = SubResource("BoxShape3D_0y2it")
+
+[node name="PlaneGrabbable3" parent="Grabbables" node_paths=PackedStringArray("ParentRigidBody") instance=ExtResource("1_xo4sr")]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 0.5, 0, 0)
+_Dimensions = Vector2(0.9, 0.9)
+ParentRigidBody = NodePath("../..")
+_DebugMode = false
+
+[node name="CollisionShape3D" parent="Grabbables/PlaneGrabbable3/Area3D" index="0"]
+shape = SubResource("BoxShape3D_0y2it")
+
+[node name="PlaneGrabbable4" parent="Grabbables" node_paths=PackedStringArray("ParentRigidBody") instance=ExtResource("1_xo4sr")]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.5, 0, 0)
+_Dimensions = Vector2(0.9, 0.9)
+ParentRigidBody = NodePath("../..")
+_DebugMode = false
+
+[node name="CollisionShape3D" parent="Grabbables/PlaneGrabbable4/Area3D" index="0"]
+shape = SubResource("BoxShape3D_0y2it")
+
+[node name="PlaneGrabbable5" parent="Grabbables" node_paths=PackedStringArray("ParentRigidBody") instance=ExtResource("1_xo4sr")]
+transform = Transform3D(1.91069e-15, 4.37114e-08, 1, 1, -4.37114e-08, 0, 4.37114e-08, 1, -4.37114e-08, 0, 0, 0.5)
+_Dimensions = Vector2(0.9, 0.9)
+ParentRigidBody = NodePath("../..")
+_DebugMode = false
+
+[node name="CollisionShape3D" parent="Grabbables/PlaneGrabbable5/Area3D" index="0"]
+shape = SubResource("BoxShape3D_0y2it")
+
+[node name="PlaneGrabbable6" parent="Grabbables" node_paths=PackedStringArray("ParentRigidBody") instance=ExtResource("1_xo4sr")]
+transform = Transform3D(1.91069e-15, -1.31134e-07, -1, 1, 4.37114e-08, -3.82137e-15, 4.37114e-08, -1, 1.31134e-07, 0, 0, -0.5)
+_Dimensions = Vector2(0.9, 0.9)
+ParentRigidBody = NodePath("../..")
+_DebugMode = false
+
+[node name="CollisionShape3D" parent="Grabbables/PlaneGrabbable6/Area3D" index="0"]
+shape = SubResource("BoxShape3D_0y2it")
+
+[editable path="Grabbables/PlaneGrabbable"]
+[editable path="Grabbables/PlaneGrabbable2"]
+[editable path="Grabbables/PlaneGrabbable3"]
+[editable path="Grabbables/PlaneGrabbable4"]
+[editable path="Grabbables/PlaneGrabbable5"]
+[editable path="Grabbables/PlaneGrabbable6"]
