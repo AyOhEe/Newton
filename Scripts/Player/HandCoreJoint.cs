@@ -8,6 +8,7 @@ public partial class HandCoreJoint : Node
 	[ExportCategory("References")]
 	[Export] private CameraRig _CameraRig;
 	[Export] private BodySolver _BodySolver;
+	[Export] private GrabCoordinator _GrabCoordinator;
     [Export] private RigidBody3D _HandRB;
 	[Export] private RigidBody3D _CoreRB;
 
@@ -19,6 +20,7 @@ public partial class HandCoreJoint : Node
 
 	[ExportCategory("Angular motion settings")]
 	[Export] private float _AngularApproachTime = 0.05f;
+	[Export] private float _MaxTorque = 1;
 
 
 
@@ -59,6 +61,8 @@ public partial class HandCoreJoint : Node
 
 	private void HandleAngularMotion(Transform3D wristTransform, double delta)
 	{
+		float fdelta = (float)delta;
+
 		//convert the current and desired rotations into quaternsions, then get the difference
 		Quaternion currentRot = _HandRB.GlobalBasis.GetRotationQuaternion();
 		Quaternion desiredRot = wristTransform.Basis.GetRotationQuaternion();
@@ -71,7 +75,11 @@ public partial class HandCoreJoint : Node
 		}
 
 		//use this to calculate the axis and angle of rotation
-		_HandRB.AngularVelocity = (deltaQ.GetAxis() * deltaQ.GetAngle()) / _AngularApproachTime;
+		Vector3 desiredAngVel = (deltaQ.GetAxis() * deltaQ.GetAngle()) / _AngularApproachTime;
+		Vector3 desiredAngMomentum = _GrabCoordinator.CalculateDesiredAngularMomentum(_HandRB, desiredAngVel, _IsLeftHanded);
+		Vector3 currentAngMomentum = _HandRB.GetInverseInertiaTensor().Inverse() * _HandRB.AngularVelocity;
+		desiredAngMomentum = (desiredAngMomentum - currentAngMomentum).LimitLength(fdelta * _MaxTorque) + currentAngMomentum;
+        _HandRB.AngularVelocity = _HandRB.GetInverseInertiaTensor() * desiredAngMomentum;
     }
 
 

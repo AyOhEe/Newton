@@ -163,4 +163,45 @@ public partial class GrabCoordinator : Node
             _RightHandJoint = null;
         }
 	}
+
+
+    public Vector3 CalculateDesiredAngularMomentum(RigidBody3D handRB, Vector3 angVel, bool leftHanded)
+    {
+        if (leftHanded)
+        {
+            if (_LeftHandJoint == null)
+            {
+                return handRB.GetInverseInertiaTensor().Inverse() * angVel;
+            }
+
+            //the momentum of the COM will be the combined linear momentum of the two bodies. from there, velocity
+            RigidBody3D grabbable = _LeftHandJoint._GrabbableRB;
+            Vector3 COMMomentum = (handRB.LinearVelocity * handRB.Mass) + (grabbable.LinearVelocity * grabbable.Mass);
+            Vector3 COMVel = COMMomentum / (handRB.Mass + grabbable.Mass);
+
+            Vector3 COM = PhysicsHelpers.CalculateCentreOfMass(handRB, grabbable);
+            return (grabbable.GetInverseInertiaTensor().Inverse() * (angVel - grabbable.AngularVelocity))
+                 + (handRB.GetInverseInertiaTensor().Inverse() * angVel)
+                 + (handRB.Mass * (handRB.CenterOfMass - COM).Cross(handRB.LinearVelocity - COMVel))
+                 + (grabbable.Mass * (grabbable.CenterOfMass - COM).Cross(grabbable.LinearVelocity - COMVel));
+        }
+        else
+        {
+            if (_RightHandJoint == null)
+            {
+                return handRB.GetInverseInertiaTensor().Inverse() * angVel;
+            }
+
+            //the momentum of the COM will be the combined linear momentum of the two bodies. from there, velocity
+            RigidBody3D grabbable = _RightHandJoint._GrabbableRB;
+            Vector3 COMMomentum = (handRB.LinearVelocity * handRB.Mass) + (grabbable.LinearVelocity * grabbable.Mass);
+            Vector3 COMVel = COMMomentum / (handRB.Mass + grabbable.Mass);
+
+            Vector3 COM = PhysicsHelpers.CalculateCentreOfMass(handRB, grabbable);
+            return (grabbable.GetInverseInertiaTensor().Inverse() * (angVel - grabbable.AngularVelocity))
+                 + (handRB.GetInverseInertiaTensor().Inverse() * angVel)
+                 + (handRB.Mass * (handRB.CenterOfMass - COM).Cross(handRB.LinearVelocity - COMVel))
+                 + (grabbable.Mass * (grabbable.CenterOfMass - COM).Cross(grabbable.LinearVelocity - COMVel));
+        }
+    }
 }

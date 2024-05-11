@@ -1,6 +1,6 @@
 [gd_scene load_steps=28 format=3 uid="uid://3716brh3f04n"]
 
-[ext_resource type="PackedScene" uid="uid://cyb2l1vcms8n0" path="res://addons/Godot-OpenXR-Startup/OpenXR Startup/CameraRig.tscn" id="1_o26st"]
+[ext_resource type="PackedScene" uid="uid://kn5xfli5tkhx" path="res://addons/Godot-VR-Measurements/scenes/UICorrectedCameraRig.tscn" id="1_pby8d"]
 [ext_resource type="PackedScene" uid="uid://c8ccdoo0nk1uy" path="res://addons/Godot-VR-Body-Solver/Scenes/SkeletalAvatar.tscn" id="2_0fogy"]
 [ext_resource type="PackedScene" uid="uid://bo3f3lg1xqgqb" path="res://addons/Godot-VR-Body-Solver/Scenes/PreparedBodySolver.tscn" id="3_gfmwf"]
 [ext_resource type="Script" path="res://addons/Newton/Scripts/Player/Turning.cs" id="3_xhkru"]
@@ -37,10 +37,10 @@ radius = 0.22
 height = 0.44
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_gp6i1"]
-size = Vector3(0.32, 0.5, 0.2)
+size = Vector3(0.32, 0.5, 0.17)
 
 [sub_resource type="BoxMesh" id="BoxMesh_8hf0b"]
-size = Vector3(0.32, 0.5, 0.2)
+size = Vector3(0.32, 0.5, 0.17)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_oq1ph"]
 radius = 0.08
@@ -60,10 +60,18 @@ size = Vector3(0.0492554, 0.0869141, 0.160278)
 
 [node name="NewtonPlayer" type="Node3D"]
 
-[node name="CameraRig" parent="." instance=ExtResource("1_o26st")]
+[node name="CameraRig" parent="." instance=ExtResource("1_pby8d")]
 
 [node name="Camera" parent="CameraRig" index="0"]
 near = 0.026
+
+[node name="UIPointer" parent="CameraRig/LeftAim" index="0"]
+UseReticle = true
+Reticle = ExtResource("10_pt675")
+
+[node name="UIPointer" parent="CameraRig/RightAim" index="0"]
+UseReticle = true
+Reticle = ExtResource("10_pt675")
 
 [node name="SkeletalAvatar" parent="CameraRig" node_paths=PackedStringArray("Solver") instance=ExtResource("2_0fogy")]
 Solver = NodePath("../../BodySolver")
@@ -202,26 +210,30 @@ transform = Transform3D(0.03, 0, 0, 0, 0.03, 0, 0, 0, 0.03, 0, 0, 0)
 [node name="ChestMount" type="Node3D" parent="PhysicsRig/Core"]
 transform = Transform3D(-1, -8.44439e-08, 2.26267e-08, -2.26267e-08, 0, -1, 8.44439e-08, -1, 2.98023e-08, 0, 0.25, 0)
 
-[node name="LHandCoreJoint" type="Node" parent="PhysicsRig/Core" node_paths=PackedStringArray("_CameraRig", "_BodySolver", "_HandRB", "_CoreRB")]
+[node name="LHandCoreJoint" type="Node" parent="PhysicsRig/Core" node_paths=PackedStringArray("_CameraRig", "_BodySolver", "_GrabCoordinator", "_HandRB", "_CoreRB")]
 script = ExtResource("9_gue12")
 _IsLeftHanded = true
 _CameraRig = NodePath("../../../CameraRig")
 _BodySolver = NodePath("../../../BodySolver")
+_GrabCoordinator = NodePath("../../GrabCoordinator")
 _HandRB = NodePath("../../LeftHand")
 _CoreRB = NodePath("..")
 _LinearApproachTime = 0.025
 _MaxImpulsePerSecond = 225.0
 _AngularApproachTime = 0.025
+_MaxTorque = 100.0
 
-[node name="RHandCoreJoint" type="Node" parent="PhysicsRig/Core" node_paths=PackedStringArray("_CameraRig", "_BodySolver", "_HandRB", "_CoreRB")]
+[node name="RHandCoreJoint" type="Node" parent="PhysicsRig/Core" node_paths=PackedStringArray("_CameraRig", "_BodySolver", "_GrabCoordinator", "_HandRB", "_CoreRB")]
 script = ExtResource("9_gue12")
 _CameraRig = NodePath("../../../CameraRig")
 _BodySolver = NodePath("../../../BodySolver")
+_GrabCoordinator = NodePath("../../GrabCoordinator")
 _HandRB = NodePath("../../RightHand")
 _CoreRB = NodePath("..")
 _LinearApproachTime = 0.025
 _MaxImpulsePerSecond = 225.0
 _AngularApproachTime = 0.025
+_MaxTorque = 100.0
 
 [node name="IgnoreLocosphereCollision" type="Node" parent="PhysicsRig/Core" node_paths=PackedStringArray("A", "B")]
 script = ExtResource("10_avgum")

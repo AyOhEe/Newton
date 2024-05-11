@@ -19,8 +19,8 @@ public partial class GrabbableJoint : Node3D
 		_HandRB.RemoveCollisionExceptionWith(_GrabbableRB);
 	}
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _PhysicsProcess(double delta)
+    // Called every frame. 'delta' is the elapsed time since the previous frame.
+    public override void _PhysicsProcess(double delta)
 	{
 		if (_GrabbableRB.Freeze)
         {
@@ -55,8 +55,11 @@ public partial class GrabbableJoint : Node3D
         Vector3 targetPos = _GrabbableRB.GlobalPosition.Lerp(grabbableDesiredPos, weighting);
         _GrabbableRB.MoveAndCollide(targetPos - _GrabbableRB.GlobalPosition);
         _HandRB.GlobalPosition = _GrabbableRB.GlobalPosition - (_HandRB.GlobalBasis * TargetPosition);
-        //TODO basis should be set proportional to the inertia of the objects in question
-        _GrabbableRB.GlobalBasis = _HandRB.GlobalBasis * TargetRotation;
+
+        //basis is set proportional to the inertia of the objects in question
+        //TODO this should have a different weight depending on COM distance from targetPos
+        _HandRB.GlobalBasis = _HandRB.GlobalBasis.Slerp(
+            _GrabbableRB.GlobalBasis * TargetRotation.Inverse(), 1 - weighting);
 
         //now that we've applied our rotations, recalculate the inertia tensors
         handIT = PhysicsHelpers.RotateInertiaTensor(handIT, _HandRB.GlobalBasis);
@@ -89,6 +92,7 @@ public partial class GrabbableJoint : Node3D
         //the bodies will have the same angular velocity as they are joined together perfectly
         _GrabbableRB.AngularVelocity = angularVelocity;
         _HandRB.AngularVelocity = angularVelocity;
+
 
 
         //from COM velocity and angular velocity, we can calculate the linear velocity
@@ -157,8 +161,9 @@ public static class PhysicsHelpers
 
     public static Basis GetLocalInertiaTensor(RigidBody3D body)
     {
-        return body.GlobalBasis.Inverse() * body.GetInverseInertiaTensor().Inverse() * body.GlobalBasis.Transposed().Inverse();
+        return RotateInertiaTensor(body.GetInverseInertiaTensor().Inverse(), body.GlobalBasis.Inverse());
     }
+    //https://en.wikipedia.org/wiki/Moment_of_inertia#Inertia_tensor_of_rotation
     public static Basis RotateInertiaTensor(Basis tensor, Basis rotation)
     {
         return rotation * tensor * rotation.Transposed();
