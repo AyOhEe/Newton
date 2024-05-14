@@ -147,8 +147,8 @@ mesh = SubResource("SphereMesh_jj4w0")
 skeleton = NodePath("../..")
 
 [node name="LegsJoint" type="Generic6DOFJoint3D" parent="PhysicsRig/Fender" node_paths=PackedStringArray("_ChestMount", "_CamRig", "_BodySolver", "_LocosphereCollision", "_FenderCollision", "_FenderJoint")]
-node_a = NodePath("../../Core")
-node_b = NodePath("..")
+node_a = NodePath("..")
+node_b = NodePath("../../Core")
 linear_limit_y/enabled = false
 linear_limit_y/upper_distance = 1.0
 linear_spring_y/enabled = true
