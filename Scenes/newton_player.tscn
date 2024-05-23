@@ -37,10 +37,10 @@ radius = 0.22
 height = 0.44
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_gp6i1"]
-size = Vector3(0.32, 0.5, 0.17)
+size = Vector3(0.25, 0.5, 0.13)
 
 [sub_resource type="BoxMesh" id="BoxMesh_8hf0b"]
-size = Vector3(0.32, 0.5, 0.17)
+size = Vector3(0.25, 0.5, 0.13)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_oq1ph"]
 radius = 0.08
@@ -182,6 +182,7 @@ _CameraRig = NodePath("../../CameraRig")
 _BodySolver = NodePath("../../BodySolver")
 
 [node name="ChestCollision" type="CollisionShape3D" parent="PhysicsRig/Core"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.02)
 shape = SubResource("BoxShape3D_gp6i1")
 
 [node name="ChestMesh" type="MeshInstance3D" parent="PhysicsRig/Core/ChestCollision"]
@@ -208,7 +209,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, -0.078)
 transform = Transform3D(0.03, 0, 0, 0, 0.03, 0, 0, 0, 0.03, 0, 0, 0)
 
 [node name="ChestMount" type="Node3D" parent="PhysicsRig/Core"]
-transform = Transform3D(-1, -8.44439e-08, 2.26267e-08, -2.26267e-08, 0, -1, 8.44439e-08, -1, 2.98023e-08, 0, 0.25, 0)
+transform = Transform3D(-1, -8.44439e-08, 2.26267e-08, -2.26267e-08, 0, -1, 8.44439e-08, -1, 2.98023e-08, 0, 0.25, 0.02)
 
 [node name="LHandCoreJoint" type="Node" parent="PhysicsRig/Core" node_paths=PackedStringArray("_CameraRig", "_BodySolver", "_GrabCoordinator", "_HandRB", "_CoreRB")]
 script = ExtResource("9_gue12")
