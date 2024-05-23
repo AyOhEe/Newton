@@ -120,15 +120,18 @@ public partial class TwoHandedGrabbableJoint : Node
         Vector3 angularVelocity = totalInertia.Inverse() * angularMomentum;
 
         //the bodies will have the same angular velocity as they are joined together perfectly
-        _GrabbableRB.AngularVelocity = angularVelocity;
-        _LeftHandRB.AngularVelocity = angularVelocity;
-        _RightHandRB.AngularVelocity = angularVelocity;
+        _GrabbableRB.AngularVelocity = angularVelocity * 0.95f;
+        _LeftHandRB.AngularVelocity = angularVelocity * 0.95f;
+        _RightHandRB.AngularVelocity = angularVelocity * 0.95f;
 
 
         //from COM velocity and angular velocity, we can calculate the linear velocity
-        _LeftHandRB.LinearVelocity = COMVel + (lHandCOM - COM).Cross(angularVelocity);
-        _RightHandRB.LinearVelocity = COMVel + (rHandCOM - COM).Cross(angularVelocity);
-        _GrabbableRB.LinearVelocity = COMVel + (grabbableCOM - COM).Cross(angularVelocity);
+        _LeftHandRB.LinearVelocity = (COMVel + (lHandCOM - COM).Cross(angularVelocity)) * 0.95f;
+        _RightHandRB.LinearVelocity = (COMVel + (rHandCOM - COM).Cross(angularVelocity)) * 0.95f;
+        _GrabbableRB.LinearVelocity = (COMVel + (grabbableCOM - COM).Cross(angularVelocity)) * 0.95f;
+
+        //TODO: I hate this fix. *0.95f everything to prevent overshooting is a shit solution.
+        //      The algo shouldn't overshoot in the first place. This is incorrect physics.
     }
 
     public static Basis AddBases(Basis left, Basis right)
