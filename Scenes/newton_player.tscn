@@ -219,9 +219,9 @@ _BodySolver = NodePath("../../../BodySolver")
 _GrabCoordinator = NodePath("../../GrabCoordinator")
 _HandRB = NodePath("../../LeftHand")
 _CoreRB = NodePath("..")
-_LinearApproachTime = 0.025
+_LinearApproachTime = 0.03
 _MaxImpulsePerSecond = 225.0
-_AngularApproachTime = 0.025
+_AngularApproachTime = 0.03
 _MaxTorque = 100.0
 
 [node name="RHandCoreJoint" type="Node" parent="PhysicsRig/Core" node_paths=PackedStringArray("_CameraRig", "_BodySolver", "_GrabCoordinator", "_HandRB", "_CoreRB")]
