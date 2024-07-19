@@ -235,19 +235,21 @@ shape = SubResource("CapsuleShape3D_xs7b8")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="PhysicsRig/LeftArm/LeftArmCollision"]
 mesh = SubResource("CapsuleMesh_2c20y")
 
-[node name="LeftElbowJoint" type="PinJoint3D" parent="PhysicsRig/LeftArm"]
+[node name="LeftElbowJoint" type="PinJoint3D" parent="PhysicsRig/LeftArm" node_paths=PackedStringArray("PinJoint")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.163679, -0.002354, 0)
 node_a = NodePath("..")
 node_b = NodePath("../../LeftForearm")
 script = ExtResource("11_qjhrs")
+PinJoint = NodePath(".")
 JointPosA = Vector3(0, 0.125, 0)
 JointPosB = Vector3(0, -0.125, 0)
 
-[node name="LeftElbowJoint2" type="PinJoint3D" parent="PhysicsRig/LeftArm"]
+[node name="LeftElbowJoint2" type="PinJoint3D" parent="PhysicsRig/LeftArm" node_paths=PackedStringArray("PinJoint")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.163679, -0.002354, 0)
 node_a = NodePath("..")
 node_b = NodePath("../../LeftForearm")
 script = ExtResource("11_qjhrs")
+PinJoint = NodePath(".")
 JointPosA = Vector3(0, 0.125, 0)
 JointPosB = Vector3(0, -0.125, 0)
 
@@ -278,16 +280,18 @@ shape = SubResource("CapsuleShape3D_ndaod")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="PhysicsRig/LeftForearm/LeftForearmCollision"]
 mesh = SubResource("CapsuleMesh_jhhmq")
 
-[node name="LeftWristJoint" type="PinJoint3D" parent="PhysicsRig/LeftForearm"]
+[node name="LeftWristJoint" type="PinJoint3D" parent="PhysicsRig/LeftForearm" node_paths=PackedStringArray("PinJoint")]
 node_a = NodePath("..")
 node_b = NodePath("../../LeftHand")
 script = ExtResource("11_qjhrs")
+PinJoint = NodePath(".")
 JointPosA = Vector3(0, 0.125, 0)
 
-[node name="LeftWristJoint2" type="PinJoint3D" parent="PhysicsRig/LeftForearm"]
+[node name="LeftWristJoint2" type="PinJoint3D" parent="PhysicsRig/LeftForearm" node_paths=PackedStringArray("PinJoint")]
 node_a = NodePath("..")
 node_b = NodePath("../../LeftHand")
 script = ExtResource("11_qjhrs")
+PinJoint = NodePath(".")
 JointPosA = Vector3(0, 0.125, 0)
 
 [node name="RightArm" type="RigidBody3D" parent="PhysicsRig"]
@@ -315,17 +319,19 @@ shape = SubResource("CapsuleShape3D_fg0uq")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="PhysicsRig/RightArm/RightArmCollision"]
 mesh = SubResource("CapsuleMesh_0a17k")
 
-[node name="RightElbowJoint" type="PinJoint3D" parent="PhysicsRig/RightArm"]
+[node name="RightElbowJoint" type="PinJoint3D" parent="PhysicsRig/RightArm" node_paths=PackedStringArray("PinJoint")]
 node_a = NodePath("..")
 node_b = NodePath("../../RightForearm")
 script = ExtResource("11_qjhrs")
+PinJoint = NodePath(".")
 JointPosA = Vector3(0, 0.125, 0)
 JointPosB = Vector3(0, -0.125, 0)
 
-[node name="RightElbowJoint2" type="PinJoint3D" parent="PhysicsRig/RightArm"]
+[node name="RightElbowJoint2" type="PinJoint3D" parent="PhysicsRig/RightArm" node_paths=PackedStringArray("PinJoint")]
 node_a = NodePath("..")
 node_b = NodePath("../../RightForearm")
 script = ExtResource("11_qjhrs")
+PinJoint = NodePath(".")
 JointPosA = Vector3(0, 0.125, 0)
 JointPosB = Vector3(0, -0.125, 0)
 
@@ -356,16 +362,18 @@ shape = SubResource("CapsuleShape3D_ay8yw")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="PhysicsRig/RightForearm/RightForearmCollision"]
 mesh = SubResource("CapsuleMesh_d1vjc")
 
-[node name="RightWristJoint" type="PinJoint3D" parent="PhysicsRig/RightForearm"]
+[node name="RightWristJoint" type="PinJoint3D" parent="PhysicsRig/RightForearm" node_paths=PackedStringArray("PinJoint")]
 node_a = NodePath("..")
 node_b = NodePath("../../RightHand")
 script = ExtResource("11_qjhrs")
+PinJoint = NodePath(".")
 JointPosA = Vector3(0, 0.125, 0)
 
-[node name="RightWristJoint2" type="PinJoint3D" parent="PhysicsRig/RightForearm"]
+[node name="RightWristJoint2" type="PinJoint3D" parent="PhysicsRig/RightForearm" node_paths=PackedStringArray("PinJoint")]
 node_a = NodePath("..")
 node_b = NodePath("../../RightHand")
 script = ExtResource("11_qjhrs")
+PinJoint = NodePath(".")
 JointPosA = Vector3(0, 0.125, 0)
 
 [node name="Core" type="RigidBody3D" parent="PhysicsRig" node_paths=PackedStringArray("_ChestMount", "_CameraRig", "_BodySolver")]
