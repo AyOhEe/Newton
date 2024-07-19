@@ -4,6 +4,7 @@ using System;
 public partial class MatchArmRotation : Node
 {
 	[Export] public BodySolver VRBodySolver;
+    [Export] public CameraRig CamRig;
 	[Export] public RigidBody3D RB;
     [Export] public Node3D BoneMount;
 	[Export] public bool isLeftArm;
@@ -52,22 +53,22 @@ public partial class MatchArmRotation : Node
 	{
 		if (isLeftArm)
 		{
-			return VRBodySolver.GetLElbowBas();
+			return CamRig.GlobalBasis * VRBodySolver.GetLElbowBas();
 		}
 		else
 		{
-			return VRBodySolver.GetRElbowBas();
+			return CamRig.GlobalBasis * VRBodySolver.GetRElbowBas();
 		}
 	}
     private Basis GetArmBasis()
     {
         if (isLeftArm)
         {
-            return VRBodySolver.GetLShoulderBas();
+            return CamRig.GlobalBasis * VRBodySolver.GetLShoulderBas();
         }
         else
         {
-            return VRBodySolver.GetRShoulderBas();
+            return CamRig.GlobalBasis * VRBodySolver.GetRShoulderBas();
         }
     }
 }
