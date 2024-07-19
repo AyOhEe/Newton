@@ -92,6 +92,7 @@ public partial class GrabCoordinator : Node
         }
 
         //remove both joints from the scene tree so they won't get _PhysicsProcess called
+        //DO NOT delete them. they get reused later.
         _LeftHandJoint.GetParent().RemoveChild(_LeftHandJoint);
         _RightHandJoint.GetParent().RemoveChild(_RightHandJoint);
 
