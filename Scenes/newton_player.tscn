@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3 uid="uid://3716brh3f04n"]
+[gd_scene load_steps=40 format=3 uid="uid://3716brh3f04n"]
 
 [ext_resource type="PackedScene" uid="uid://kn5xfli5tkhx" path="res://addons/Godot-VR-Measurements/scenes/UICorrectedCameraRig.tscn" id="1_pby8d"]
 [ext_resource type="PackedScene" uid="uid://c8ccdoo0nk1uy" path="res://addons/Godot-VR-Body-Solver/Scenes/SkeletalAvatar.tscn" id="2_0fogy"]
@@ -19,6 +19,7 @@
 [ext_resource type="Script" path="res://addons/Newton/Scripts/Player/RescaleArmSegment.cs" id="11_0yyws"]
 [ext_resource type="Script" path="res://addons/Newton/Scripts/Grabbables/PhysbodyHand.cs" id="11_bonw1"]
 [ext_resource type="Script" path="res://addons/Newton/Scripts/Player/PinJointController.cs" id="11_qjhrs"]
+[ext_resource type="Script" path="res://addons/Newton/Scripts/Player/ShoulderJointPositioning.cs" id="17_wfi3c"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_7mq57"]
 resource_local_to_scene = true
@@ -446,12 +447,28 @@ script = ExtResource("11_qjhrs")
 JointPosA = Vector3(-0.125, 0.225, 0)
 JointPosB = Vector3(0, -0.125, 0)
 
+[node name="ShoulderJointPositioning" type="Node" parent="PhysicsRig/Core/LeftShoulderJoint" node_paths=PackedStringArray("VRBodySolver", "CoreRB", "ChestMount", "ShoulderJointController")]
+script = ExtResource("17_wfi3c")
+VRBodySolver = NodePath("../../../../BodySolver")
+CoreRB = NodePath("../..")
+ChestMount = NodePath("../../ChestMount")
+ShoulderJointController = NodePath("..")
+isLeftShoulder = true
+
 [node name="LeftShoulderJoint2" type="PinJoint3D" parent="PhysicsRig/Core"]
 node_a = NodePath("..")
 node_b = NodePath("../../LeftArm")
 script = ExtResource("11_qjhrs")
 JointPosA = Vector3(-0.125, 0.225, 0)
 JointPosB = Vector3(0, -0.125, 0)
+
+[node name="ShoulderJointPositioning" type="Node" parent="PhysicsRig/Core/LeftShoulderJoint2" node_paths=PackedStringArray("VRBodySolver", "CoreRB", "ChestMount", "ShoulderJointController")]
+script = ExtResource("17_wfi3c")
+VRBodySolver = NodePath("../../../../BodySolver")
+CoreRB = NodePath("../..")
+ChestMount = NodePath("../../ChestMount")
+ShoulderJointController = NodePath("..")
+isLeftShoulder = true
 
 [node name="RightShoulderJoint" type="PinJoint3D" parent="PhysicsRig/Core"]
 node_a = NodePath("..")
@@ -460,12 +477,26 @@ script = ExtResource("11_qjhrs")
 JointPosA = Vector3(0.125, 0.225, 0)
 JointPosB = Vector3(0, -0.125, 0)
 
+[node name="ShoulderJointPositioning" type="Node" parent="PhysicsRig/Core/RightShoulderJoint" node_paths=PackedStringArray("VRBodySolver", "CoreRB", "ChestMount", "ShoulderJointController")]
+script = ExtResource("17_wfi3c")
+VRBodySolver = NodePath("../../../../BodySolver")
+CoreRB = NodePath("../..")
+ChestMount = NodePath("../../ChestMount")
+ShoulderJointController = NodePath("..")
+
 [node name="RightShoulderJoint2" type="PinJoint3D" parent="PhysicsRig/Core"]
 node_a = NodePath("..")
 node_b = NodePath("../../RightArm")
 script = ExtResource("11_qjhrs")
 JointPosA = Vector3(0.125, 0.225, 0)
 JointPosB = Vector3(0, -0.125, 0)
+
+[node name="ShoulderJointPositioning" type="Node" parent="PhysicsRig/Core/RightShoulderJoint2" node_paths=PackedStringArray("VRBodySolver", "CoreRB", "ChestMount", "ShoulderJointController")]
+script = ExtResource("17_wfi3c")
+VRBodySolver = NodePath("../../../../BodySolver")
+CoreRB = NodePath("../..")
+ChestMount = NodePath("../../ChestMount")
+ShoulderJointController = NodePath("..")
 
 [node name="LeftHand" type="RigidBody3D" parent="PhysicsRig" node_paths=PackedStringArray("PalmGrabPoint", "_GrabCoordinator")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.09, 1.052, -0.438)
