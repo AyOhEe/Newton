@@ -99,9 +99,6 @@ size = Vector3(0.0492554, 0.0869141, 0.160278)
 
 [node name="CameraRig" parent="." instance=ExtResource("1_pby8d")]
 
-[node name="Camera" parent="CameraRig" index="0"]
-near = 0.026
-
 [node name="UIPointer" parent="CameraRig/LeftAim" index="0"]
 UseReticle = true
 Reticle = ExtResource("10_pt675")

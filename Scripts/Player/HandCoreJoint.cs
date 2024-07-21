@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Reflection.Metadata.Ecma335;
 
 public partial class HandCoreJoint : Node
 {
@@ -13,7 +14,7 @@ public partial class HandCoreJoint : Node
 	[Export] private RigidBody3D _CoreRB;
 
 
-	[ExportCategory("Linear motion settings")]
+    [ExportCategory("Linear motion settings")]
 	[Export] private float _LinearApproachTime = 0.02f;
     [Export] private float _MaxImpulsePerSecond = 10;
 
@@ -53,9 +54,17 @@ public partial class HandCoreJoint : Node
 
 	private Vector3 CalculateDesiredHandVel(Vector3 wristPos)
 	{
-		Vector3 wristApproachVel = (wristPos - _HandRB.GlobalPosition) / _LinearApproachTime;
+		Vector3 clampedWristPos = ClampWristToElbow(wristPos);
+		Vector3 wristApproachVel = (clampedWristPos - _HandRB.GlobalPosition) / _LinearApproachTime;
 
 		return wristApproachVel + _CoreRB.LinearVelocity;
+	}
+
+	private Vector3 ClampWristToElbow(Vector3 wristPos)
+	{
+		Vector3 elbowPos = GetElbowTransform().Origin;
+
+		return (wristPos - elbowPos).LimitLength(VRUserMeasurements.Forearm) + elbowPos;
 	}
 
 
@@ -92,6 +101,17 @@ public partial class HandCoreJoint : Node
 		else
         {
             return _CameraRig.GlobalTransform * new Transform3D(_BodySolver.GetRWristBas(), _BodySolver.GetRWristPos());
+        }
+    }
+    private Transform3D GetElbowTransform()
+    {
+        if (_IsLeftHanded)
+        {
+            return _CameraRig.GlobalTransform * new Transform3D(_BodySolver.GetLElbowBas(), _BodySolver.GetLElbowPos());
+        }
+        else
+        {
+            return _CameraRig.GlobalTransform * new Transform3D(_BodySolver.GetRElbowBas(), _BodySolver.GetRElbowPos());
         }
     }
 }
