@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://3716brh3f04n"]
+[gd_scene load_steps=41 format=3 uid="uid://wo8o1d8w2j4s"]
 
 [ext_resource type="PackedScene" uid="uid://kn5xfli5tkhx" path="res://addons/Godot-VR-Measurements/scenes/UICorrectedCameraRig.tscn" id="1_pby8d"]
 [ext_resource type="PackedScene" uid="uid://c8ccdoo0nk1uy" path="res://addons/Godot-VR-Body-Solver/Scenes/SkeletalAvatar.tscn" id="2_0fogy"]
@@ -308,14 +308,12 @@ node_a = NodePath("..")
 node_b = NodePath("../../LeftHand")
 script = ExtResource("11_qjhrs")
 JointPosA = Vector3(0, 0.125, 0)
-JointPosB = Vector3(0, 0, 0.02)
 
 [node name="LeftWristJoint2" type="PinJoint3D" parent="PhysicsRig/LeftForearm"]
 node_a = NodePath("..")
 node_b = NodePath("../../LeftHand")
 script = ExtResource("11_qjhrs")
 JointPosA = Vector3(0, 0.125, 0)
-JointPosB = Vector3(0, 0, 0.02)
 
 [node name="RightArm" type="RigidBody3D" parent="PhysicsRig"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0829906, 1.21941, -0.295264)
@@ -413,14 +411,12 @@ node_a = NodePath("..")
 node_b = NodePath("../../RightHand")
 script = ExtResource("11_qjhrs")
 JointPosA = Vector3(0, 0.125, 0)
-JointPosB = Vector3(0, 0, 0.02)
 
 [node name="RightWristJoint2" type="PinJoint3D" parent="PhysicsRig/RightForearm"]
 node_a = NodePath("..")
 node_b = NodePath("../../RightHand")
 script = ExtResource("11_qjhrs")
 JointPosA = Vector3(0, 0.125, 0)
-JointPosB = Vector3(0, 0, 0.02)
 
 [node name="Core" type="RigidBody3D" parent="PhysicsRig" node_paths=PackedStringArray("_ChestMount", "_CameraRig", "_BodySolver")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
