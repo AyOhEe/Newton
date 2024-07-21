@@ -229,14 +229,6 @@ CollisionShape = NodePath("../LeftArmCollision")
 MeshInstance = NodePath("../LeftArmCollision/MeshInstance3D")
 radiusRatio = 0.12
 
-[node name="RescaleLeftArm2" type="Node" parent="PhysicsRig/LeftArm" node_paths=PackedStringArray("JointWhereA", "JointWhereB", "CollisionShape", "MeshInstance")]
-script = ExtResource("11_0yyws")
-JointWhereA = NodePath("../LeftElbowJoint2")
-JointWhereB = NodePath("../../Core/LeftShoulderJoint2")
-CollisionShape = NodePath("../LeftArmCollision")
-MeshInstance = NodePath("../LeftArmCollision/MeshInstance3D")
-radiusRatio = 0.12
-
 [node name="BoneMount" type="Node3D" parent="PhysicsRig/LeftArm"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
 
@@ -247,14 +239,6 @@ shape = SubResource("CapsuleShape3D_xs7b8")
 mesh = SubResource("CapsuleMesh_2c20y")
 
 [node name="LeftElbowJoint" type="PinJoint3D" parent="PhysicsRig/LeftArm"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.163679, -0.002354, 0)
-node_a = NodePath("..")
-node_b = NodePath("../../LeftForearm")
-script = ExtResource("11_qjhrs")
-JointPosA = Vector3(0, 0.125, 0)
-JointPosB = Vector3(0, -0.125, 0)
-
-[node name="LeftElbowJoint2" type="PinJoint3D" parent="PhysicsRig/LeftArm"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.163679, -0.002354, 0)
 node_a = NodePath("..")
 node_b = NodePath("../../LeftForearm")
@@ -285,15 +269,6 @@ MeshInstance = NodePath("../LeftForearmCollision/MeshInstance3D")
 isForearm = true
 radiusRatio = 0.12
 
-[node name="RescaleLeftForearm2" type="Node" parent="PhysicsRig/LeftForearm" node_paths=PackedStringArray("JointWhereA", "JointWhereB", "CollisionShape", "MeshInstance")]
-script = ExtResource("11_0yyws")
-JointWhereA = NodePath("../LeftWristJoint2")
-JointWhereB = NodePath("../../LeftArm/LeftElbowJoint2")
-CollisionShape = NodePath("../LeftForearmCollision")
-MeshInstance = NodePath("../LeftForearmCollision/MeshInstance3D")
-isForearm = true
-radiusRatio = 0.12
-
 [node name="BoneMount" type="Node3D" parent="PhysicsRig/LeftForearm"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
 
@@ -304,12 +279,6 @@ shape = SubResource("CapsuleShape3D_ndaod")
 mesh = SubResource("CapsuleMesh_jhhmq")
 
 [node name="LeftWristJoint" type="PinJoint3D" parent="PhysicsRig/LeftForearm"]
-node_a = NodePath("..")
-node_b = NodePath("../../LeftHand")
-script = ExtResource("11_qjhrs")
-JointPosA = Vector3(0, 0.125, 0)
-
-[node name="LeftWristJoint2" type="PinJoint3D" parent="PhysicsRig/LeftForearm"]
 node_a = NodePath("..")
 node_b = NodePath("../../LeftHand")
 script = ExtResource("11_qjhrs")
@@ -335,14 +304,6 @@ CollisionShape = NodePath("../RightArmCollision")
 MeshInstance = NodePath("../RightArmCollision/MeshInstance3D")
 radiusRatio = 0.12
 
-[node name="RescaleRightArm2" type="Node" parent="PhysicsRig/RightArm" node_paths=PackedStringArray("JointWhereA", "JointWhereB", "CollisionShape", "MeshInstance")]
-script = ExtResource("11_0yyws")
-JointWhereA = NodePath("../RightElbowJoint2")
-JointWhereB = NodePath("../../Core/RightShoulderJoint2")
-CollisionShape = NodePath("../RightArmCollision")
-MeshInstance = NodePath("../RightArmCollision/MeshInstance3D")
-radiusRatio = 0.12
-
 [node name="BoneMount" type="Node3D" parent="PhysicsRig/RightArm"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
 
@@ -353,13 +314,6 @@ shape = SubResource("CapsuleShape3D_fg0uq")
 mesh = SubResource("CapsuleMesh_0a17k")
 
 [node name="RightElbowJoint" type="PinJoint3D" parent="PhysicsRig/RightArm"]
-node_a = NodePath("..")
-node_b = NodePath("../../RightForearm")
-script = ExtResource("11_qjhrs")
-JointPosA = Vector3(0, 0.125, 0)
-JointPosB = Vector3(0, -0.125, 0)
-
-[node name="RightElbowJoint2" type="PinJoint3D" parent="PhysicsRig/RightArm"]
 node_a = NodePath("..")
 node_b = NodePath("../../RightForearm")
 script = ExtResource("11_qjhrs")
@@ -388,15 +342,6 @@ MeshInstance = NodePath("../RightForearmCollision/MeshInstance3D")
 isForearm = true
 radiusRatio = 0.12
 
-[node name="RescaleRightForearm2" type="Node" parent="PhysicsRig/RightForearm" node_paths=PackedStringArray("JointWhereA", "JointWhereB", "CollisionShape", "MeshInstance")]
-script = ExtResource("11_0yyws")
-JointWhereA = NodePath("../RightWristJoint2")
-JointWhereB = NodePath("../../RightArm/RightElbowJoint2")
-CollisionShape = NodePath("../RightForearmCollision")
-MeshInstance = NodePath("../RightForearmCollision/MeshInstance3D")
-isForearm = true
-radiusRatio = 0.12
-
 [node name="BoneMount" type="Node3D" parent="PhysicsRig/RightForearm"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
 
@@ -407,12 +352,6 @@ shape = SubResource("CapsuleShape3D_ay8yw")
 mesh = SubResource("CapsuleMesh_d1vjc")
 
 [node name="RightWristJoint" type="PinJoint3D" parent="PhysicsRig/RightForearm"]
-node_a = NodePath("..")
-node_b = NodePath("../../RightHand")
-script = ExtResource("11_qjhrs")
-JointPosA = Vector3(0, 0.125, 0)
-
-[node name="RightWristJoint2" type="PinJoint3D" parent="PhysicsRig/RightForearm"]
 node_a = NodePath("..")
 node_b = NodePath("../../RightHand")
 script = ExtResource("11_qjhrs")
@@ -505,21 +444,6 @@ ChestMount = NodePath("../../ChestMount")
 ShoulderJointController = NodePath("..")
 isLeftShoulder = true
 
-[node name="LeftShoulderJoint2" type="PinJoint3D" parent="PhysicsRig/Core"]
-node_a = NodePath("..")
-node_b = NodePath("../../LeftArm")
-script = ExtResource("11_qjhrs")
-JointPosA = Vector3(-0.125, 0.225, 0)
-JointPosB = Vector3(0, -0.125, 0)
-
-[node name="ShoulderJointPositioning" type="Node" parent="PhysicsRig/Core/LeftShoulderJoint2" node_paths=PackedStringArray("VRBodySolver", "CoreRB", "ChestMount", "ShoulderJointController")]
-script = ExtResource("17_wfi3c")
-VRBodySolver = NodePath("../../../../BodySolver")
-CoreRB = NodePath("../..")
-ChestMount = NodePath("../../ChestMount")
-ShoulderJointController = NodePath("..")
-isLeftShoulder = true
-
 [node name="RightShoulderJoint" type="PinJoint3D" parent="PhysicsRig/Core"]
 node_a = NodePath("..")
 node_b = NodePath("../../RightArm")
@@ -528,20 +452,6 @@ JointPosA = Vector3(0.125, 0.225, 0)
 JointPosB = Vector3(0, -0.125, 0)
 
 [node name="ShoulderJointPositioning" type="Node" parent="PhysicsRig/Core/RightShoulderJoint" node_paths=PackedStringArray("VRBodySolver", "CoreRB", "ChestMount", "ShoulderJointController")]
-script = ExtResource("17_wfi3c")
-VRBodySolver = NodePath("../../../../BodySolver")
-CoreRB = NodePath("../..")
-ChestMount = NodePath("../../ChestMount")
-ShoulderJointController = NodePath("..")
-
-[node name="RightShoulderJoint2" type="PinJoint3D" parent="PhysicsRig/Core"]
-node_a = NodePath("..")
-node_b = NodePath("../../RightArm")
-script = ExtResource("11_qjhrs")
-JointPosA = Vector3(0.125, 0.225, 0)
-JointPosB = Vector3(0, -0.125, 0)
-
-[node name="ShoulderJointPositioning" type="Node" parent="PhysicsRig/Core/RightShoulderJoint2" node_paths=PackedStringArray("VRBodySolver", "CoreRB", "ChestMount", "ShoulderJointController")]
 script = ExtResource("17_wfi3c")
 VRBodySolver = NodePath("../../../../BodySolver")
 CoreRB = NodePath("../..")

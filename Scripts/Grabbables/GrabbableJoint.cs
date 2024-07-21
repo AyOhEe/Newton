@@ -55,16 +55,11 @@ public partial class GrabbableJoint : Node3D
         Vector3 targetPos = _GrabbableRB.GlobalPosition.Lerp(grabbableDesiredPos, weighting);
         _GrabbableRB.MoveAndCollide(targetPos - _GrabbableRB.GlobalPosition);
         _HandRB.GlobalPosition = _GrabbableRB.GlobalPosition - (_HandRB.GlobalBasis * TargetPosition);
-
-        //basis is set proportional to the inertia of the objects in question
-        //TODO this should have a different weight depending on COM distance from targetPos
-        _HandRB.GlobalBasis = _HandRB.GlobalBasis.Slerp(
-            _GrabbableRB.GlobalBasis * TargetRotation.Inverse(), 1 - weighting);
+        _HandRB.GlobalBasis = _GrabbableRB.GlobalBasis * TargetRotation.Inverse();
 
         //now that we've applied our rotations, recalculate the inertia tensors
         handIT = PhysicsHelpers.RotateInertiaTensor(handIT, _HandRB.GlobalBasis);
         grabbableIT = PhysicsHelpers.RotateInertiaTensor(grabbableIT, _GrabbableRB.GlobalBasis);
-
 
 
         //we'll need these for the upcoming calculations
