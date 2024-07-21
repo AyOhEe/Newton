@@ -10,6 +10,7 @@ public partial class RescaleArmSegment : Node
 
     [Export] bool isForearm;
     [Export] float radiusRatio = 0.167f;
+    [Export] float heightRadiusAdditionMultiplier = 1.5f;
 
     public override void _EnterTree()
     {
@@ -32,7 +33,7 @@ public partial class RescaleArmSegment : Node
         CapsuleShape3D capsuleShape = (CapsuleShape3D)CollisionShape.Shape;
 
         capsuleShape.Radius = length * radiusRatio;
-        capsuleShape.Height = length + (capsuleShape.Radius * 2);
+        capsuleShape.Height = length + (capsuleShape.Radius * heightRadiusAdditionMultiplier);
         if(MeshInstance != null && MeshInstance.Mesh is CapsuleMesh)
         {
             CapsuleMesh mesh = (CapsuleMesh)(MeshInstance.Mesh);
