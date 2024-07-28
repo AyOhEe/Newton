@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://wo8o1d8w2j4s"]
+[gd_scene load_steps=43 format=3 uid="uid://wo8o1d8w2j4s"]
 
 [ext_resource type="PackedScene" uid="uid://kn5xfli5tkhx" path="res://addons/Godot-VR-Measurements/scenes/UICorrectedCameraRig.tscn" id="1_pby8d"]
 [ext_resource type="PackedScene" uid="uid://c8ccdoo0nk1uy" path="res://addons/Godot-VR-Body-Solver/Scenes/SkeletalAvatar.tscn" id="2_0fogy"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://gpmyah7fn7um" path="res://addons/Newton/Models/Hands/vr_glove_left_model_slim.tscn" id="9_861yw"]
 [ext_resource type="Script" path="res://addons/Newton/Scripts/Player/HeadCollider.cs" id="9_e4qeh"]
 [ext_resource type="Script" path="res://addons/Newton/Scripts/Player/HandCoreJoint.cs" id="9_gue12"]
+[ext_resource type="Script" path="res://addons/Newton/Scripts/Player/ShrinkMidair.cs" id="9_lgv21"]
 [ext_resource type="Script" path="res://addons/Newton/Scripts/IgnoreCollision.cs" id="10_avgum"]
 [ext_resource type="PackedScene" uid="uid://dk5nfpbuk3mvr" path="res://addons/Newton/Models/Hands/vr_glove_right_model_slim.tscn" id="10_mtn3l"]
 [ext_resource type="PackedScene" uid="uid://ta178svgkj7b" path="res://addons/Godot-Extras/Axis Helper/Axis Helper.tscn" id="10_pt675"]
@@ -33,6 +34,9 @@ radius = 0.22
 [sub_resource type="SphereMesh" id="SphereMesh_jj4w0"]
 radius = 0.22
 height = 0.44
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7muw2"]
+size = Vector3(0.3, 0.1, 0.3)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_xr4nt"]
 radius = 0.215
@@ -145,6 +149,8 @@ script = ExtResource("6_58baa")
 
 [node name="Fender" type="RigidBody3D" parent="PhysicsRig"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+collision_layer = 2
+collision_mask = 3
 axis_lock_angular_x = true
 axis_lock_angular_y = true
 axis_lock_angular_z = true
@@ -155,7 +161,21 @@ can_sleep = false
 [node name="FenderCollision" type="CollisionShape3D" parent="PhysicsRig/Fender"]
 shape = SubResource("SphereShape3D_lmjnj")
 
+[node name="ShrinkMidair" type="Node" parent="PhysicsRig/Fender/FenderCollision" node_paths=PackedStringArray("_GroundCheck", "ignoreList", "_CollisionShape")]
+script = ExtResource("9_lgv21")
+_GroundCheck = NodePath("../../ShapeCast3D")
+ignoreList = [NodePath("../.."), NodePath("../../../Locosphere"), NodePath("../../../LeftArm"), NodePath("../../../LeftForearm"), NodePath("../../../RightArm"), NodePath("../../../RightForearm"), NodePath("../../../Core"), NodePath("../../../LeftHand"), NodePath("../../../RightHand")]
+_CollisionShape = NodePath("..")
+normalRadius = 0.22
+shrankRadius = 0.1
+tweenTime = 0.4
+
+[node name="Timer" type="Timer" parent="PhysicsRig/Fender/FenderCollision/ShrinkMidair"]
+wait_time = 0.1
+autostart = true
+
 [node name="FenderMesh" type="MeshInstance3D" parent="PhysicsRig/Fender/FenderCollision"]
+visible = false
 mesh = SubResource("SphereMesh_jj4w0")
 skeleton = NodePath("../..")
 
@@ -182,8 +202,14 @@ _JumpCrouchSpeed = 2.0
 _CrouchingDeadzone = 0.3
 _MaxCrouchEquilibrium = 1.0
 
+[node name="ShapeCast3D" type="ShapeCast3D" parent="PhysicsRig/Fender"]
+shape = SubResource("BoxShape3D_7muw2")
+target_position = Vector3(0, -0.3, 0)
+
 [node name="Locosphere" type="RigidBody3D" parent="PhysicsRig" node_paths=PackedStringArray("_CameraRig", "_BodySolver")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.956946, 0)
+collision_layer = 2
+collision_mask = 3
 mass = 5.0
 physics_material_override = SubResource("PhysicsMaterial_7mq57")
 can_sleep = false
@@ -197,7 +223,21 @@ _DefaultAngVel = 10.0
 [node name="LocosphereCollision" type="CollisionShape3D" parent="PhysicsRig/Locosphere"]
 shape = SubResource("SphereShape3D_xr4nt")
 
+[node name="ShrinkMidair" type="Node" parent="PhysicsRig/Locosphere/LocosphereCollision" node_paths=PackedStringArray("_GroundCheck", "ignoreList", "_CollisionShape")]
+script = ExtResource("9_lgv21")
+_GroundCheck = NodePath("../../../Fender/ShapeCast3D")
+ignoreList = [NodePath("../../../Fender"), NodePath("../.."), NodePath("../../../LeftArm"), NodePath("../../../LeftForearm"), NodePath("../../../RightArm"), NodePath("../../../RightForearm"), NodePath("../../../Core"), NodePath("../../../LeftHand"), NodePath("../../../RightHand")]
+_CollisionShape = NodePath("..")
+normalRadius = 0.215
+shrankRadius = 0.09
+tweenTime = 0.4
+
+[node name="Timer" type="Timer" parent="PhysicsRig/Locosphere/LocosphereCollision/ShrinkMidair"]
+wait_time = 0.1
+autostart = true
+
 [node name="LocosphereMesh" type="MeshInstance3D" parent="PhysicsRig/Locosphere/LocosphereCollision"]
+visible = false
 mesh = SubResource("SphereMesh_28osh")
 skeleton = NodePath("../..")
 
@@ -210,6 +250,8 @@ angular_limit_z/enabled = false
 
 [node name="LeftArm" type="RigidBody3D" parent="PhysicsRig"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0806885, 1.22177, -0.295264)
+collision_layer = 2
+collision_mask = 3
 
 [node name="MatchArmRotation" type="Node" parent="PhysicsRig/LeftArm" node_paths=PackedStringArray("VRBodySolver", "CamRig", "RB", "BoneMount")]
 script = ExtResource("11_qrf5w")
@@ -248,6 +290,8 @@ JointPosB = Vector3(0, -0.125, 0)
 
 [node name="LeftForearm" type="RigidBody3D" parent="PhysicsRig"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0806885, 1.26962, -0.437997)
+collision_layer = 2
+collision_mask = 3
 
 [node name="MatchArmRotation" type="Node" parent="PhysicsRig/LeftForearm" node_paths=PackedStringArray("VRBodySolver", "CamRig", "RB", "BoneMount")]
 script = ExtResource("11_qrf5w")
@@ -286,6 +330,8 @@ JointPosA = Vector3(0, 0.125, 0)
 
 [node name="RightArm" type="RigidBody3D" parent="PhysicsRig"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0829906, 1.21941, -0.295264)
+collision_layer = 2
+collision_mask = 3
 
 [node name="MatchArmRotation" type="Node" parent="PhysicsRig/RightArm" node_paths=PackedStringArray("VRBodySolver", "CamRig", "RB", "BoneMount")]
 script = ExtResource("11_qrf5w")
@@ -322,6 +368,8 @@ JointPosB = Vector3(0, -0.125, 0)
 
 [node name="RightForearm" type="RigidBody3D" parent="PhysicsRig"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0829906, 1.26727, -0.437997)
+collision_layer = 2
+collision_mask = 3
 
 [node name="MatchArmRotation" type="Node" parent="PhysicsRig/RightForearm" node_paths=PackedStringArray("VRBodySolver", "CamRig", "RB", "BoneMount")]
 script = ExtResource("11_qrf5w")
@@ -359,6 +407,8 @@ JointPosA = Vector3(0, 0.125, 0)
 
 [node name="Core" type="RigidBody3D" parent="PhysicsRig" node_paths=PackedStringArray("_ChestMount", "_CameraRig", "_BodySolver")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+collision_layer = 2
+collision_mask = 3
 axis_lock_angular_x = true
 axis_lock_angular_y = true
 axis_lock_angular_z = true
@@ -368,6 +418,11 @@ script = ExtResource("4_jlr6y")
 _ChestMount = NodePath("ChestMount")
 _CameraRig = NodePath("../../CameraRig")
 _BodySolver = NodePath("../../BodySolver")
+
+[node name="IgnoreLocosphereCollision" type="Node" parent="PhysicsRig/Core" node_paths=PackedStringArray("A", "B")]
+script = ExtResource("10_avgum")
+A = NodePath("..")
+B = NodePath("../../Locosphere")
 
 [node name="ChestCollision" type="CollisionShape3D" parent="PhysicsRig/Core"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.02)
@@ -399,7 +454,7 @@ transform = Transform3D(0.03, 0, 0, 0, 0.03, 0, 0, 0, 0.03, 0, 0, 0)
 [node name="ChestMount" type="Node3D" parent="PhysicsRig/Core"]
 transform = Transform3D(-1, -8.44439e-08, 2.26267e-08, -2.26267e-08, 0, -1, 8.44439e-08, -1, 2.98023e-08, 0, 0.25, 0.02)
 
-[node name="LHandCoreJoint" type="Node" parent="PhysicsRig/Core" node_paths=PackedStringArray("_CameraRig", "_BodySolver", "_GrabCoordinator", "_HandRB", "_CoreRB")]
+[node name="LHandCoreScriptedJoint" type="Node" parent="PhysicsRig/Core" node_paths=PackedStringArray("_CameraRig", "_BodySolver", "_GrabCoordinator", "_HandRB", "_CoreRB")]
 script = ExtResource("9_gue12")
 _IsLeftHanded = true
 _CameraRig = NodePath("../../../CameraRig")
@@ -412,7 +467,7 @@ _MaxImpulsePerSecond = 225.0
 _AngularApproachTime = 0.03
 _MaxTorque = 100.0
 
-[node name="RHandCoreJoint" type="Node" parent="PhysicsRig/Core" node_paths=PackedStringArray("_CameraRig", "_BodySolver", "_GrabCoordinator", "_HandRB", "_CoreRB")]
+[node name="RHandCoreScriptedJoint" type="Node" parent="PhysicsRig/Core" node_paths=PackedStringArray("_CameraRig", "_BodySolver", "_GrabCoordinator", "_HandRB", "_CoreRB")]
 script = ExtResource("9_gue12")
 _CameraRig = NodePath("../../../CameraRig")
 _BodySolver = NodePath("../../../BodySolver")
@@ -423,11 +478,6 @@ _LinearApproachTime = 0.025
 _MaxImpulsePerSecond = 225.0
 _AngularApproachTime = 0.025
 _MaxTorque = 100.0
-
-[node name="IgnoreLocosphereCollision" type="Node" parent="PhysicsRig/Core" node_paths=PackedStringArray("A", "B")]
-script = ExtResource("10_avgum")
-A = NodePath("..")
-B = NodePath("../../Locosphere")
 
 [node name="LeftShoulderJoint" type="PinJoint3D" parent="PhysicsRig/Core"]
 node_a = NodePath("..")
@@ -460,6 +510,8 @@ ShoulderJointController = NodePath("..")
 
 [node name="LeftHand" type="RigidBody3D" parent="PhysicsRig" node_paths=PackedStringArray("PalmGrabPoint", "_GrabCoordinator")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.09, 1.052, -0.438)
+collision_layer = 2
+collision_mask = 3
 mass = 2.0
 physics_material_override = SubResource("PhysicsMaterial_wuh51")
 gravity_scale = 0.2
@@ -486,6 +538,8 @@ transform = Transform3D(0.03, 0, 0, 0, 0.03, 0, 0, 0, 0.03, 0, 0, 0)
 
 [node name="RightHand" type="RigidBody3D" parent="PhysicsRig" node_paths=PackedStringArray("PalmGrabPoint", "_GrabCoordinator")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.09, 1.05168, -0.437997)
+collision_layer = 2
+collision_mask = 3
 mass = 2.0
 physics_material_override = SubResource("PhysicsMaterial_wuh51")
 gravity_scale = 0.2
@@ -522,6 +576,8 @@ transform = Transform3D(0.03, 0, 0, 0, 0.03, 0, 0, 0, 0.03, 0, 0, 0)
 [connection signal="input_vector2_changed" from="CameraRig/RightHand" to="CameraRig/Turning" method="ControllerVec2Input"]
 [connection signal="input_vector2_changed" from="CameraRig/RightHand" to="PhysicsRig/Fender/LegsJoint" method="ControllerVec2Changed"]
 [connection signal="timeout" from="CameraRig/Turning/Timer" to="CameraRig/Turning" method="ReEnableSnapTurn"]
+[connection signal="timeout" from="PhysicsRig/Fender/FenderCollision/ShrinkMidair/Timer" to="PhysicsRig/Fender/FenderCollision/ShrinkMidair" method="UpdateCollider"]
+[connection signal="timeout" from="PhysicsRig/Locosphere/LocosphereCollision/ShrinkMidair/Timer" to="PhysicsRig/Locosphere/LocosphereCollision/ShrinkMidair" method="UpdateCollider"]
 
 [editable path="CameraRig"]
 [editable path="CameraRig/SkeletalAvatar"]
