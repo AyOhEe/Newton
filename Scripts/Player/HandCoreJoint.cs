@@ -46,9 +46,17 @@ public partial class HandCoreJoint : Node
 		//ensure the hands cannot apply too much force at once by clamping the impulse
 		requiredImpulse = requiredImpulse.LimitLength(_MaxImpulsePerSecond * (float)delta);
 
-        //apply this to the hand, and apply the opposite to the core (consv. momentum)
-        _HandRB.LinearVelocity += requiredImpulse / _HandRB.Mass;
-        _CoreRB.LinearVelocity -= requiredImpulse / _CoreRB.Mass;
+		//apply this to the hand, and apply the opposite to the core (consv. momentum)
+		Vector3 deltaV = requiredImpulse / _HandRB.Mass;
+		if (deltaV.IsFinite())
+        {
+            _HandRB.LinearVelocity += deltaV;
+            _CoreRB.LinearVelocity -= deltaV;
+        }
+		else
+		{
+			GD.PrintErr("HandCoreJoint calculated infinite deltaV");
+		}
     }
 
 	private Vector3 CalculateDesiredHandVel(Vector3 wristPos)
@@ -87,7 +95,16 @@ public partial class HandCoreJoint : Node
 		Vector3 desiredAngMomentum = _GrabCoordinator.CalculateDesiredAngularMomentum(_HandRB, desiredAngVel, _IsLeftHanded);
 		Vector3 currentAngMomentum = _HandRB.GetInverseInertiaTensor().Inverse() * _HandRB.AngularVelocity;
 		desiredAngMomentum = (desiredAngMomentum - currentAngMomentum).LimitLength(fdelta * _MaxTorque) + currentAngMomentum;
-        _HandRB.AngularVelocity = _HandRB.GetInverseInertiaTensor() * desiredAngMomentum;
+		Vector3 angVel = _HandRB.GetInverseInertiaTensor() * desiredAngMomentum;
+
+		if (angVel.IsFinite())
+        {
+            _HandRB.AngularVelocity = angVel;
+        }
+        else
+        {
+            GD.PrintErr("HandCoreJoint calculated infinite angVel");
+        }
     }
 
 
