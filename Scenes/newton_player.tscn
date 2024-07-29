@@ -114,6 +114,9 @@ Reticle = ExtResource("10_pt675")
 [node name="SkeletalAvatar" parent="CameraRig" node_paths=PackedStringArray("Solver") instance=ExtResource("2_0fogy")]
 Solver = NodePath("../../BodySolver")
 
+[node name="Eyes" parent="CameraRig/SkeletalAvatar" index="0"]
+visible = false
+
 [node name="Axis Helper" parent="CameraRig/SkeletalAvatar/Eyes" index="1"]
 visible = false
 
@@ -200,6 +203,7 @@ _FenderCollision = NodePath("../FenderCollision")
 _FenderJoint = NodePath("../../Locosphere/FenderJoint")
 _JumpCrouchSpeed = 2.0
 _CrouchingDeadzone = 0.3
+_MinCrouchEquilibrium = 0.05
 _MaxCrouchEquilibrium = 1.0
 
 [node name="ShapeCast3D" type="ShapeCast3D" parent="PhysicsRig/Fender"]
@@ -447,6 +451,7 @@ skeleton = NodePath("../..")
 
 [node name="EyeMount" type="Node3D" parent="PhysicsRig/Core/HeadCollision"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, -0.078)
+visible = false
 
 [node name="Axis Helper" parent="PhysicsRig/Core/HeadCollision/EyeMount" instance=ExtResource("10_pt675")]
 transform = Transform3D(0.03, 0, 0, 0, 0.03, 0, 0, 0, 0.03, 0, 0, 0)
@@ -465,7 +470,7 @@ _CoreRB = NodePath("..")
 _LinearApproachTime = 0.03
 _MaxImpulsePerSecond = 225.0
 _AngularApproachTime = 0.03
-_MaxTorque = 100.0
+_MaxTorque = 30.0
 
 [node name="RHandCoreScriptedJoint" type="Node" parent="PhysicsRig/Core" node_paths=PackedStringArray("_CameraRig", "_BodySolver", "_GrabCoordinator", "_HandRB", "_CoreRB")]
 script = ExtResource("9_gue12")
@@ -477,7 +482,7 @@ _CoreRB = NodePath("..")
 _LinearApproachTime = 0.025
 _MaxImpulsePerSecond = 225.0
 _AngularApproachTime = 0.025
-_MaxTorque = 100.0
+_MaxTorque = 30.0
 
 [node name="LeftShoulderJoint" type="PinJoint3D" parent="PhysicsRig/Core"]
 node_a = NodePath("..")
