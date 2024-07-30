@@ -14,7 +14,7 @@ public partial class ShoulderJointPositioning : Node
 	{
 		Transform3D localPose = GetPose();
 		Transform3D relativePose = GetChestPose().Inverse() * localPose;
-		ShoulderJointController.JointPosA = CoreRB.GlobalTransform.Inverse() * ChestMount.GlobalTransform * relativePose.Origin;
+		ShoulderJointController.JointPosA = ChestMount.Transform * relativePose.Origin;
 	}
 	private Transform3D GetPose()
 	{

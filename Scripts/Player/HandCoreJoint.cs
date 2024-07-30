@@ -47,11 +47,10 @@ public partial class HandCoreJoint : Node
 		requiredImpulse = requiredImpulse.LimitLength(_MaxImpulsePerSecond * (float)delta);
 
 		//apply this to the hand, and apply the opposite to the core (consv. momentum)
-		Vector3 deltaV = requiredImpulse / _HandRB.Mass;
-		if (deltaV.IsFinite())
+		if (requiredImpulse.IsFinite())
         {
-            _HandRB.LinearVelocity += deltaV;
-            _CoreRB.LinearVelocity -= deltaV;
+            _HandRB.LinearVelocity += requiredImpulse / _HandRB.Mass;
+            _CoreRB.LinearVelocity -= requiredImpulse / _CoreRB.Mass;
         }
 		else
 		{
