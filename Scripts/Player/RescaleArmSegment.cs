@@ -6,7 +6,6 @@ public partial class RescaleArmSegment : Node
     [Export] PinJointController JointWhereA;
     [Export] PinJointController JointWhereB;
     [Export] CollisionShape3D CollisionShape;
-    [Export] MeshInstance3D MeshInstance;
 
     [Export] bool isForearm;
     [Export] float radiusRatio = 0.167f;
@@ -34,12 +33,6 @@ public partial class RescaleArmSegment : Node
 
         capsuleShape.Radius = length * radiusRatio;
         capsuleShape.Height = length + (capsuleShape.Radius * heightRadiusAdditionMultiplier);
-        if(MeshInstance != null && MeshInstance.Mesh is CapsuleMesh)
-        {
-            CapsuleMesh mesh = (CapsuleMesh)(MeshInstance.Mesh);
-            mesh.Radius = capsuleShape.Radius;
-            mesh.Height = capsuleShape.Height;
-        }
 
         JointWhereA.JointPosA = new Vector3(0,  (length / 2), 0);
         JointWhereB.JointPosB = new Vector3(0, -(length / 2), 0);
