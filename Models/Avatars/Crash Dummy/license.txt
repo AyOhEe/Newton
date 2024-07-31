@@ -1,0 +1,11 @@
+Model Information:
+* title:	Crash Dummy
+* source:	https://sketchfab.com/3d-models/crash-dummy-0c5cf6b017ba48f1bb32244ae1fefd2d
+* author:	robomax (https://sketchfab.com/robomax)
+
+Model License:
+* license type:	CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
+* requirements:	Author must be credited. No commercial use.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Crash Dummy" (https://sketchfab.com/3d-models/crash-dummy-0c5cf6b017ba48f1bb32244ae1fefd2d) by robomax (https://sketchfab.com/robomax) licensed under CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
