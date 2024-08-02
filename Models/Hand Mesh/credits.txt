@@ -1,0 +1,1 @@
+OpenXR Hand Skeleton assets from https://github.com/Malcolmnixon/OpenXRHandTestSuite
