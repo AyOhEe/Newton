@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=3 uid="uid://wo8o1d8w2j4s"]
+[gd_scene load_steps=43 format=3 uid="uid://wo8o1d8w2j4s"]
 
 [ext_resource type="PackedScene" uid="uid://kn5xfli5tkhx" path="res://addons/Godot-VR-Measurements/scenes/UICorrectedCameraRig.tscn" id="1_pby8d"]
 [ext_resource type="PackedScene" uid="uid://c8ccdoo0nk1uy" path="res://addons/Godot-VR-Body-Solver/Scenes/SkeletalAvatar.tscn" id="2_0fogy"]
@@ -25,6 +25,7 @@
 [ext_resource type="Script" path="res://addons/Newton/Scripts/BodyMesh/BodyMesh.cs" id="23_awjlb"]
 [ext_resource type="Script" path="res://addons/Newton/Scripts/BodyMesh/ForceUpdateBoneAttachment3D.cs" id="24_s6vtw"]
 [ext_resource type="Script" path="res://addons/Newton/Scripts/BodyMesh/ArmSegmentBoneParent.cs" id="25_qpbvd"]
+[ext_resource type="Script" path="res://addons/Newton/Scripts/BodyMesh/HeadBoneParent.cs" id="25_w8ex7"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_7mq57"]
 resource_local_to_scene = true
@@ -914,7 +915,7 @@ transform = Transform3D(0.03, 0, 0, 0, 0.03, 0, 0, 0, 0.03, 0, 0, 0)
 [node name="crash_dummy_RIGGED" parent="." node_paths=PackedStringArray("_BoneAttachments", "_BoneAttachmentMounts", "_LeftArmParent", "_LeftForearmParent", "_RightArmParent", "_RightForearmParent") instance=ExtResource("22_camjs")]
 script = ExtResource("23_awjlb")
 _BoneAttachments = [NodePath("Armature/Skeleton3D/ChestBoneParent"), NodePath("Armature/Skeleton3D/HeadBoneParent"), NodePath("Armature/Skeleton3D/LeftThighBoneParent"), NodePath("Armature/Skeleton3D/RightThighBoneParent"), NodePath("Armature/Skeleton3D/LeftShinBoneParent"), NodePath("Armature/Skeleton3D/RightShinBoneParent"), NodePath("Armature/Skeleton3D/LeftFootBoneParent"), NodePath("Armature/Skeleton3D/RightFootBoneParent"), NodePath("Armature/Skeleton3D/LeftToesBoneParent"), NodePath("Armature/Skeleton3D/RightToesBoneParent"), NodePath("Armature/Skeleton3D/LeftArmBoneParent"), NodePath("Armature/Skeleton3D/RightArmBoneParent"), NodePath("Armature/Skeleton3D/LeftForearmBoneParent"), NodePath("Armature/Skeleton3D/RightForearmBoneParent"), NodePath("Armature/Skeleton3D/LeftHandBoneParent"), NodePath("Armature/Skeleton3D/RightHandBoneParent")]
-_BoneAttachmentMounts = [NodePath("../PhysicsRig/Core/ChestCollision"), NodePath("../PhysicsRig/Core/HeadCollision"), NodePath("HiddenBoneMount"), NodePath("HiddenBoneMount"), NodePath("HiddenBoneMount"), NodePath("HiddenBoneMount"), NodePath("HiddenBoneMount"), NodePath("HiddenBoneMount"), NodePath("HiddenBoneMount"), NodePath("HiddenBoneMount"), NodePath("../PhysicsRig/LeftArm"), NodePath("../PhysicsRig/RightArm"), NodePath("../PhysicsRig/LeftForearm"), NodePath("../PhysicsRig/RightForearm"), NodePath("../PhysicsRig/LeftHand"), NodePath("../PhysicsRig/RightHand")]
+_BoneAttachmentMounts = [NodePath("../PhysicsRig/Core/ChestCollision"), NodePath("../PhysicsRig/Core/HeadCollision/EyeMount"), NodePath("HiddenBoneMount"), NodePath("HiddenBoneMount"), NodePath("HiddenBoneMount"), NodePath("HiddenBoneMount"), NodePath("HiddenBoneMount"), NodePath("HiddenBoneMount"), NodePath("HiddenBoneMount"), NodePath("HiddenBoneMount"), NodePath("../PhysicsRig/LeftArm"), NodePath("../PhysicsRig/RightArm"), NodePath("../PhysicsRig/LeftForearm"), NodePath("../PhysicsRig/RightForearm"), NodePath("../PhysicsRig/LeftHand"), NodePath("../PhysicsRig/RightHand")]
 _LeftArmParent = NodePath("Armature/Skeleton3D/LeftArmBoneParent")
 _LeftForearmParent = NodePath("Armature/Skeleton3D/LeftForearmBoneParent")
 _RightArmParent = NodePath("Armature/Skeleton3D/RightArmBoneParent")
@@ -965,17 +966,23 @@ use_external_skeleton = true
 external_skeleton = NodePath("../../..")
 script = ExtResource("24_s6vtw")
 
-[node name="HeadBoneParent" type="Node3D" parent="crash_dummy_RIGGED/Armature/Skeleton3D" index="2"]
+[node name="HeadBoneParent" type="Node3D" parent="crash_dummy_RIGGED/Armature/Skeleton3D" index="2" node_paths=PackedStringArray("_Eyes", "_HeadBone")]
 transform = Transform3D(1, -1.42109e-14, -2.38419e-07, 1.19246e-07, 0.865937, 0.500153, 2.06455e-07, -0.500153, 0.865937, 1.77636e-15, 1.46248, 0.0531458)
+script = ExtResource("25_w8ex7")
+_Eyes = NodePath("Eyes")
+_HeadBone = NodePath("HeadBoneGroup")
 
 [node name="HeadBoneGroup" type="BoneAttachment3D" parent="crash_dummy_RIGGED/Armature/Skeleton3D/HeadBoneParent"]
-transform = Transform3D(1, 6.50109e-08, 5.45391e-08, -8.35038e-08, 0.86826, 0.496111, -1.51013e-08, -0.496111, 0.86826, 2.49402e-09, -0.0317008, 0.0451996)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 bone_name = "Head"
 bone_idx = 11
 override_pose = true
 use_external_skeleton = true
 external_skeleton = NodePath("../..")
 script = ExtResource("24_s6vtw")
+
+[node name="Eyes" type="Node3D" parent="crash_dummy_RIGGED/Armature/Skeleton3D/HeadBoneParent"]
+transform = Transform3D(1, 2.93099e-14, 5.68434e-14, 7.10543e-15, 0.842095, -0.539329, 0, 0.539329, 0.842095, 1.23867e-08, 0.143678, -0.0730463)
 
 [node name="LeftThighBoneParent" type="Node3D" parent="crash_dummy_RIGGED/Armature/Skeleton3D" index="3"]
 transform = Transform3D(-0.992637, -0.121018, 0.00528977, 0.121133, -0.991687, 0.0433804, -4.01097e-06, 0.0437017, 0.999045, -0.0814057, 0.861632, 2.35842e-08)
