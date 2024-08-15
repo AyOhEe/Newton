@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://bii8bxrael17m"
-path="res://.godot/imported/RightHandOpenXR.gltf-7c5f2b844bc48b5b2b4d99091b6f48a1.scn"
+uid="uid://driyq86kih6j7"
+path="res://.godot/imported/RightHandHumanoid.gltf-a39c8330bb1cb8800c689b94f979df84.scn"
 
 [deps]
 
-source_file="res://addons/Newton/Models/Hand Mesh/RightHandOpenXR.gltf"
-dest_files=["res://.godot/imported/RightHandOpenXR.gltf-7c5f2b844bc48b5b2b4d99091b6f48a1.scn"]
+source_file="res://addons/Newton/Models/Hand Mesh/RightHandHumanoid.gltf"
+dest_files=["res://.godot/imported/RightHandHumanoid.gltf-a39c8330bb1cb8800c689b94f979df84.scn"]
 
 [params]
 
@@ -17,6 +17,7 @@ nodes/root_type=""
 nodes/root_name=""
 nodes/apply_root_scale=true
 nodes/root_scale=1.0
+nodes/import_as_skeleton_bones=false
 meshes/ensure_tangents=true
 meshes/generate_lods=true
 meshes/create_shadow_meshes=true
@@ -28,6 +29,7 @@ animation/import=true
 animation/fps=30
 animation/trimming=false
 animation/remove_immutable_tracks=true
+animation/import_rest_as_RESET=false
 import_script/path=""
 _subresources={}
 gltf/naming_version=1
