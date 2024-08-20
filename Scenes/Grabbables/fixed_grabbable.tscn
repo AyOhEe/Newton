@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://pjf5vdja06y8"]
+
+[ext_resource type="Script" path="res://addons/Newton/Scripts/Grabbables/FixedGrabbable.cs" id="1_cd812"]
+[ext_resource type="PackedScene" uid="uid://ta178svgkj7b" path="res://addons/Godot-Extras/Axis Helper/Axis Helper.tscn" id="2_4vmxv"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_aviv6"]
+size = Vector3(0.3, 0.3, 0.3)
+
+[node name="FixedGrabbable" type="Node3D" node_paths=PackedStringArray("Tools")]
+transform = Transform3D(-8.74228e-08, -1, 1.31134e-07, 4.37114e-08, -1.31134e-07, -1, 1, -8.74228e-08, 4.37114e-08, 0, 0, 0)
+script = ExtResource("1_cd812")
+LeftHanded = true
+Tools = []
+_AxisHelper = ExtResource("2_4vmxv")
+
+[node name="Area3D" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("BoxShape3D_aviv6")
+
+[connection signal="body_entered" from="Area3D" to="." method="OnBodyEntered"]
+[connection signal="body_exited" from="Area3D" to="." method="OnBodyExited"]

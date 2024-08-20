@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://ce62gcmm1n4dy"]
+
+[ext_resource type="Script" path="res://addons/Newton/Scripts/Grabbables/CylinderGrabbable.cs" id="1_dkyqy"]
+[ext_resource type="PackedScene" uid="uid://ta178svgkj7b" path="res://addons/Godot-Extras/Axis Helper/Axis Helper.tscn" id="2_lxyj5"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_vyn5y"]
+height = 0.7
+radius = 0.25
+
+[node name="CylinderGrabbable" type="Node3D" node_paths=PackedStringArray("Tools")]
+script = ExtResource("1_dkyqy")
+Radius = 0.1
+Height = 0.5
+Tools = []
+_AxisHelper = ExtResource("2_lxyj5")
+
+[node name="Area3D" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("CylinderShape3D_vyn5y")
+
+[connection signal="body_entered" from="Area3D" to="." method="OnBodyEntered"]
+[connection signal="body_exited" from="Area3D" to="." method="OnBodyExited"]
