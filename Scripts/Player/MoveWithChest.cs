@@ -6,7 +6,7 @@ public partial class MoveWithChest : Node
 {
 	[Export] private BodySolver _BodySolver;
 	[Export] private CameraRig _CameraRig;
-	[Export] private Array<RigidBody3D> _RigRigidbodies;
+	[Export] private Array<Node3D> _RigBodies;
 
 
 	private Vector3 _LastChestPos = Vector3.Zero;
@@ -26,7 +26,7 @@ public partial class MoveWithChest : Node
 
 
 		//move all rig rigidbodies by this change
-		foreach(RigidBody3D rb in _RigRigidbodies)
+		foreach(Node3D rb in _RigBodies)
 		{
 			rb.GlobalPosition += chestDelta;
 		}
