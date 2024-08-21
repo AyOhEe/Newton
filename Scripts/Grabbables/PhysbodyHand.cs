@@ -11,6 +11,7 @@ public partial class PhysbodyHand : RigidBody3D
 
 
     [Export] public bool IsLeftHanded { get; private set; }
+    [Export] public float poseAngleCost { get; private set; }
     [Export] public Node3D PalmGrabPoint { get; private set; }
     [Export] private GrabCoordinator _GrabCoordinator;
 
@@ -110,7 +111,8 @@ public partial class PhysbodyHand : RigidBody3D
     }
     private float CalculatePoseCost(Transform3D nearestPose)
     {
-        return PalmGrabPoint.GlobalPosition.DistanceTo(nearestPose.Origin);
+        return PalmGrabPoint.GlobalPosition.DistanceTo(nearestPose.Origin)
+            + (new Quaternion(PalmGrabPoint.GlobalBasis.Inverse() * nearestPose.Basis).GetAngle() * poseAngleCost);
     }
 
     public float GetGripStrength()
