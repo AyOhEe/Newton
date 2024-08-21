@@ -23,7 +23,7 @@ public partial class CylinderGrabbable : Grabbable
 
         //pick the most comfortable orientation, closest to the current hand orientation
         Vector3 grabUpVector = Vector3.Up;
-        Vector3 localUpVector = GlobalTransform.Inverse() * Hand.PalmGrabPoint.GlobalTransform * Vector3.Up;
+        Vector3 localUpVector = GlobalBasis.Inverse() * Hand.PalmGrabPoint.GlobalBasis * Vector3.Up;
         if (grabUpVector.Dot(localUpVector) < 0)
         {
             grabUpVector = -grabUpVector;
