@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://qfgo5swji4uy"]
+
+[ext_resource type="Script" path="res://addons/Newton/Scripts/Grabbables/LineEdgeGrabbable.cs" id="1_hwdgi"]
+[ext_resource type="PackedScene" uid="uid://ta178svgkj7b" path="res://addons/Godot-Extras/Axis Helper/Axis Helper.tscn" id="2_r4swy"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gbvoc"]
+size = Vector3(1, 0.2, 0.2)
+
+[node name="EdgeGrabbable" type="Node3D" node_paths=PackedStringArray("Tools")]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0.2, 0.2)
+script = ExtResource("1_hwdgi")
+Tools = []
+_AxisHelper = ExtResource("2_r4swy")
+
+[node name="Area3D" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("BoxShape3D_gbvoc")
+
+[connection signal="body_entered" from="Area3D" to="." method="OnBodyEntered"]
+[connection signal="body_exited" from="Area3D" to="." method="OnBodyExited"]
