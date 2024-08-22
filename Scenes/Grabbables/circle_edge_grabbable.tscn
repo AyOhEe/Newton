@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://o1ier6urg6ck"]
+
+[ext_resource type="Script" path="res://addons/Newton/Scripts/Grabbables/CircleEdgeGrabbable.cs" id="1_x7pc7"]
+[ext_resource type="PackedScene" uid="uid://ta178svgkj7b" path="res://addons/Godot-Extras/Axis Helper/Axis Helper.tscn" id="2_tr8f1"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_qq21g"]
+radius = 0.188741
+
+[node name="CircleEdgeGrabbable" type="Node3D" node_paths=PackedStringArray("Tools")]
+script = ExtResource("1_x7pc7")
+Tools = []
+_AxisHelper = ExtResource("2_tr8f1")
+
+[node name="Area3D" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("SphereShape3D_qq21g")
+
+[connection signal="body_entered" from="Area3D" to="." method="OnBodyEntered"]
+[connection signal="body_exited" from="Area3D" to="." method="OnBodyExited"]
