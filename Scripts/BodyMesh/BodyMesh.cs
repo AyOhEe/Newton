@@ -14,21 +14,48 @@ public partial class BodyMesh : Node
     [Export] private ArmSegmentBoneParent _RightArmParent;
     [Export] private ArmSegmentBoneParent _RightForearmParent;
 
+    private Array<RemoteTransform3D> boneRemoteTransforms;
+
     public override void _EnterTree()
     {
         if(_BoneAttachmentMounts.Count != _BoneAttachments.Count)
         {
             GD.PrintErr("BodyMesh was not provided with equal bone attachments and bone group mounts!");
         }
+
+
+        boneRemoteTransforms = new Array<RemoteTransform3D>();
+
+        for (int i = 0; i < _BoneAttachments.Count; i++)
+        {
+            if (_BoneAttachments[i] == null || _BoneAttachmentMounts[i] == null)
+            {
+                continue;
+            }
+
+            RemoteTransform3D rt = new RemoteTransform3D();
+            _BoneAttachmentMounts[i].AddChild(rt);
+
+            rt.RemotePath = rt.GetPathTo(_BoneAttachments[i]);
+            boneRemoteTransforms.Add(rt);
+        }
+    }
+
+    public override void _ExitTree()
+    {
+        foreach(Node n in boneRemoteTransforms)
+        {
+            n.QueueFree();
+        }
+        boneRemoteTransforms = new Array<RemoteTransform3D>();
     }
 
     public override void _Process(double delta)
     {
-        PositionBones();
         SetArmSegmentLengths();
     }
 
-    private void PositionBones()
+    /*private void PositionBones()
     {
         if (_BoneAttachmentMounts.Count != _BoneAttachments.Count)
         {
@@ -44,7 +71,7 @@ public partial class BodyMesh : Node
 
             _BoneAttachments[i].GlobalTransform = _BoneAttachmentMounts[i].GlobalTransform;
         }
-    }
+    }*/
 
     private void SetArmSegmentLengths()
     {
