@@ -9,8 +9,8 @@ public abstract partial class Grabbable : Node3D
     [Signal] public delegate void OnGrabEndEventHandler(Grabbable grabbable, PhysbodyHand hand);
 
     [ExportCategory("Grabbable Settings")]
-    [Export] public RigidBody3D ParentRigidBody { get; protected set; }
-    [Export] public Array<Tool> Tools { get; protected set; }
+    [Export] public RigidBody3D ParentRigidBody;
+    [Export] public Array<Tool> Tools;
     [Export] protected bool _DebugMode;
     [Export] protected PackedScene _AxisHelper;
 
