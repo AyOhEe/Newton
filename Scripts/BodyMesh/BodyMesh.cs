@@ -39,6 +39,8 @@ public partial class BodyMesh : Node
             rt.RemotePath = rt.GetPathTo(_BoneAttachments[i]);
             boneRemoteTransforms.Add(rt);
         }
+
+        RenderingServer.FramePreDraw += PositionBones;
     }
 
     public override void _ExitTree()
@@ -48,6 +50,8 @@ public partial class BodyMesh : Node
             n.QueueFree();
         }
         boneRemoteTransforms = new Array<RemoteTransform3D>();
+
+        RenderingServer.FramePreDraw -= PositionBones;
     }
 
     public override void _Process(double delta)
@@ -55,7 +59,7 @@ public partial class BodyMesh : Node
         SetArmSegmentLengths();
     }
 
-    /*private void PositionBones()
+    private void PositionBones()
     {
         if (_BoneAttachmentMounts.Count != _BoneAttachments.Count)
         {
@@ -71,7 +75,7 @@ public partial class BodyMesh : Node
 
             _BoneAttachments[i].GlobalTransform = _BoneAttachmentMounts[i].GlobalTransform;
         }
-    }*/
+    }
 
     private void SetArmSegmentLengths()
     {
