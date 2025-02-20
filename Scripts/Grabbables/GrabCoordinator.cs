@@ -4,7 +4,13 @@ using static Godot.OpenXRInterface;
 
 public partial class GrabCoordinator : Node
 {
-	private GrabbableJoint _LeftHandJoint;
+    [ExportCategory("References")]
+    [Export] private CameraRig _CameraRig;
+    [Export] private BodySolver _BodySolver;
+    [Export] private PhysbodyHand _LeftHand;
+    [Export] private PhysbodyHand _RightHand;
+
+    private GrabbableJoint _LeftHandJoint;
 	private GrabbableJoint _RightHandJoint;
 	private TwoHandedGrabbableJoint _THJoint;
 
@@ -204,6 +210,70 @@ public partial class GrabCoordinator : Node
                  + (handRB.GetInverseInertiaTensor().Inverse() * angVel)
                  + (handRB.Mass * (handRB.CenterOfMass - COM).Cross(handRB.LinearVelocity - COMVel))
                  + (grabbable.Mass * (grabbable.CenterOfMass - COM).Cross(grabbable.LinearVelocity - COMVel));
+        }
+    }
+
+
+    public Transform3D GetWristTransform(bool leftie)
+    {
+        //in short, pretend that (as far as the joints are concerned) the IRL wrists never get too close 
+        //to where they want to be. this increases stability by making sure the joints always have to do
+        //some amount of work.
+        if (_THJoint != null)
+        {
+            Vector3 leftGrabPoint = _THJoint._GrabbableRB.GlobalTransform * _THJoint.LeftTargetPosition;
+            Vector3 rightGrabPoint = _THJoint._GrabbableRB.GlobalTransform * _THJoint.RightTargetPosition;
+            float radius = leftGrabPoint.DistanceTo(rightGrabPoint);
+
+            Vector3 leftHandOrigin = _LeftHand.GlobalPosition;
+            Vector3 rightHandOrigin = _RightHand.GlobalPosition;
+            Vector3 grabSphereOrigin = (leftHandOrigin + rightHandOrigin) / 2;
+
+            //project on a sphere equidistant to both wrists, with diameter of the
+            //distance between grab points on the rigidbody. ensure the wrist's effective distance
+            //is at least 1.2r from the sphere's origin
+            Transform3D wristTransform = _GetRealWristTransform(leftie);
+            if (wristTransform.Origin.DistanceTo(grabSphereOrigin) <= (radius * 1.05f))
+            {
+                wristTransform.Origin = grabSphereOrigin + (grabSphereOrigin.DirectionTo(wristTransform.Origin) * (radius * 1.05f));
+            }
+            return wristTransform;
+        } 
+        else
+        {
+            return _GetRealWristTransform(leftie);
+        }
+    }
+    public Transform3D GetElbowTransform(bool leftie)
+    {
+        Vector3 offset = GetWristTransform(leftie).Origin - _GetRealWristTransform(leftie).Origin;
+
+        Transform3D adjustedTransform = _GetRealElbowTransform(leftie);
+        adjustedTransform.Origin += offset;
+
+        return adjustedTransform;
+    }
+
+    public Transform3D _GetRealWristTransform(bool leftie)
+    {
+        if (leftie)
+        {
+            return _CameraRig.GlobalTransform * new Transform3D(_BodySolver.GetLWristBas(), _BodySolver.GetLWristPos());
+        }
+        else
+        {
+            return _CameraRig.GlobalTransform * new Transform3D(_BodySolver.GetRWristBas(), _BodySolver.GetRWristPos());
+        }
+    }
+    public Transform3D _GetRealElbowTransform(bool leftie)
+    {
+        if (leftie)
+        {
+            return _CameraRig.GlobalTransform * new Transform3D(_BodySolver.GetLElbowBas(), _BodySolver.GetLElbowPos());
+        }
+        else
+        {
+            return _CameraRig.GlobalTransform * new Transform3D(_BodySolver.GetRElbowBas(), _BodySolver.GetRElbowPos());
         }
     }
 }
