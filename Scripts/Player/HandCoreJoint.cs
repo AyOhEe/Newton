@@ -23,26 +23,38 @@ public partial class HandCoreJoint : Node
 	[Export] private float _MaxTorque = 1;
 
 
+	private bool _HandIsHolding = false;
+	private RigidBody3D _HandHeldObject;
+
+	// TODO When holding an object, desired angular velocity should impact desired linear velocity.
+	// TODO the problem for two handed grabbing jitters seems to be that the HandCoreJoints get
+	//      too comfortable when they're near the desired wrist position, stop outputting enough force
+	//      on one end, and then get stuck in a loop of overcorrection. i think this is, in part, because
+	//      the grabbable joints don't properly apply the linear velocity coming from angular forces
+	//      (e.g. why objects rotate around your wrist IRL, and not around the shared COM) 
+
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _PhysicsProcess(double delta)
 	{
 		Transform3D wristTransform = GetWristTransform();
 
-
-		HandleLinearMotion(wristTransform, delta);
-		HandleAngularMotion(wristTransform, delta);
+        HandleLinearMotion(wristTransform, delta);
+        HandleAngularMotion(wristTransform, delta);
     }
 
 	private void HandleLinearMotion(Transform3D wristTransform, double delta)
 	{
         //calculate hand momentum and desired hand momentum
-        Vector3 handMomentum = _HandRB.LinearVelocity * _HandRB.Mass;
-        Vector3 desiredHandMomentum = CalculateDesiredHandVel(wristTransform.Origin) * _HandRB.Mass;
+        Vector3 momentum = _HandRB.LinearVelocity * _HandRB.Mass 
+	   + (_HandIsHolding ? _HandHeldObject.LinearVelocity * _HandHeldObject.Mass : Vector3.Zero);
+
+		float totalMass = _HandRB.Mass + (_HandIsHolding ? _HandHeldObject.Mass : 0);
+        Vector3 desiredMomentum = CalculateDesiredHandVel(wristTransform.Origin) * totalMass;
 
         //calculate the required impulse to achieve this velocity, clamped to the maximum
         //we are allowed to apply per second
-        Vector3 requiredImpulse = desiredHandMomentum - handMomentum;
+        Vector3 requiredImpulse = desiredMomentum - momentum;
 		//ensure the hands cannot apply too much force at once by clamping the impulse
 		requiredImpulse = requiredImpulse.LimitLength(_MaxImpulsePerSecond * (float)delta);
 
@@ -62,8 +74,9 @@ public partial class HandCoreJoint : Node
 	{
 		Vector3 clampedWristPos = ClampWristToElbow(wristPos);
 		Vector3 wristApproachVel = (clampedWristPos - _HandRB.GlobalPosition) / _LinearApproachTime;
+		Vector3 remappedApproachVel = wristApproachVel.Normalized() * (0.8f * MathF.Log2(wristApproachVel.Length() + 1));
 
-		return wristApproachVel + _CoreRB.LinearVelocity;
+		return remappedApproachVel + _CoreRB.LinearVelocity;
 	}
 
 	private Vector3 ClampWristToElbow(Vector3 wristPos)
@@ -106,6 +119,23 @@ public partial class HandCoreJoint : Node
         }
     }
 
+
+	public void BeginGrab(RigidBody3D _, Grabbable target)
+	{
+		if (_HandIsHolding)
+		{
+			return;
+		}
+
+		_HandIsHolding = true;
+		_HandHeldObject = target.ParentRigidBody;
+	}
+
+	public void ExitGrab(RigidBody3D _, Grabbable target)
+	{
+		_HandIsHolding = false;
+		_HandHeldObject = null;
+	}
 
 	private Transform3D GetWristTransform()
 	{
