@@ -233,9 +233,9 @@ public partial class GrabCoordinator : Node
             //distance between grab points on the rigidbody. ensure the wrist's effective distance
             //is at least 1.2r from the sphere's origin
             Transform3D wristTransform = _GetRealWristTransform(leftie);
-            if (wristTransform.Origin.DistanceTo(grabSphereOrigin) <= (radius * 1.05f))
+            if (wristTransform.Origin.DistanceTo(grabSphereOrigin) <= (radius + 0.01f))
             {
-                wristTransform.Origin = grabSphereOrigin + (grabSphereOrigin.DirectionTo(wristTransform.Origin) * (radius * 1.05f));
+                wristTransform.Origin = grabSphereOrigin + (grabSphereOrigin.DirectionTo(wristTransform.Origin) * (radius + 0.01f));
             }
             return wristTransform;
         } 
