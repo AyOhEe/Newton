@@ -6,8 +6,6 @@ public partial class HandCoreJoint : Node
 	[Export] private bool _IsLeftHanded;
 
 	[ExportCategory("References")]
-	[Export] private CameraRig _CameraRig;
-	[Export] private BodySolver _BodySolver;
 	[Export] private GrabCoordinator _GrabCoordinator;
     [Export] private RigidBody3D _HandRB;
 	[Export] private RigidBody3D _CoreRB;
@@ -37,7 +35,7 @@ public partial class HandCoreJoint : Node
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _PhysicsProcess(double delta)
 	{
-		Transform3D wristTransform = GetWristTransform();
+		Transform3D wristTransform = _GrabCoordinator.GetWristTransform(_IsLeftHanded);
 
         HandleLinearMotion(wristTransform, delta);
         HandleAngularMotion(wristTransform, delta);
@@ -81,7 +79,7 @@ public partial class HandCoreJoint : Node
 
 	private Vector3 ClampWristToElbow(Vector3 wristPos)
 	{
-		Vector3 elbowPos = GetElbowTransform().Origin;
+		Vector3 elbowPos = _GrabCoordinator.GetElbowTransform(_IsLeftHanded).Origin;
 
 		return (wristPos - elbowPos).LimitLength(VRUserMeasurements.Forearm) + elbowPos;
 	}
@@ -136,27 +134,4 @@ public partial class HandCoreJoint : Node
 		_HandIsHolding = false;
 		_HandHeldObject = null;
 	}
-
-	private Transform3D GetWristTransform()
-	{
-		if (_IsLeftHanded)
-        {
-            return _CameraRig.GlobalTransform * new Transform3D(_BodySolver.GetLWristBas(), _BodySolver.GetLWristPos());
-        }
-		else
-        {
-            return _CameraRig.GlobalTransform * new Transform3D(_BodySolver.GetRWristBas(), _BodySolver.GetRWristPos());
-        }
-    }
-    private Transform3D GetElbowTransform()
-    {
-        if (_IsLeftHanded)
-        {
-            return _CameraRig.GlobalTransform * new Transform3D(_BodySolver.GetLElbowBas(), _BodySolver.GetLElbowPos());
-        }
-        else
-        {
-            return _CameraRig.GlobalTransform * new Transform3D(_BodySolver.GetRElbowBas(), _BodySolver.GetRElbowPos());
-        }
-    }
 }

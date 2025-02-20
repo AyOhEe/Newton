@@ -5,12 +5,12 @@ public partial class TwoHandedGrabbableJoint : Node
 {
     private PhysbodyHand _LeftHandRB;
     private PhysbodyHand _RightHandRB;
-    private RigidBody3D _GrabbableRB;
+    public RigidBody3D _GrabbableRB { get; protected set; }
 
-    private Vector3 _LeftTargetPosition;
-    private Basis _LeftTargetRotation;
-    private Vector3 _RightTargetPosition;
-    private Basis _RightTargetRotation;
+    public Vector3 LeftTargetPosition;
+    public Basis LeftTargetRotation;
+    public Vector3 RightTargetPosition;
+    public Basis RightTargetRotation;
 
     public TwoHandedGrabbableJoint(GrabbableJoint leftJoint, GrabbableJoint rightJoint)
     {
@@ -18,10 +18,10 @@ public partial class TwoHandedGrabbableJoint : Node
         _RightHandRB = rightJoint._HandRB;
         _GrabbableRB = rightJoint._GrabbableRB;
 
-        _LeftTargetPosition = leftJoint.TargetPosition;
-        _LeftTargetRotation = leftJoint.TargetRotation;
-        _RightTargetPosition = rightJoint.TargetPosition;
-        _RightTargetRotation = rightJoint.TargetRotation;
+        LeftTargetPosition = leftJoint.TargetPosition;
+        LeftTargetRotation = leftJoint.TargetRotation;
+        RightTargetPosition = rightJoint.TargetPosition;
+        RightTargetRotation = rightJoint.TargetRotation;
     }
 
     public override void _PhysicsProcess(double delta)
@@ -39,13 +39,13 @@ public partial class TwoHandedGrabbableJoint : Node
     {
         //the hand is essentially stuck to the frozen body right now. as such, move the hand to the required
         //position and rotation
-        _LeftHandRB.GlobalBasis = _GrabbableRB.GlobalBasis * _LeftTargetRotation.Inverse();
-        _LeftHandRB.GlobalPosition = _GrabbableRB.GlobalPosition - (_LeftHandRB.GlobalBasis * _LeftTargetPosition);
+        _LeftHandRB.GlobalBasis = _GrabbableRB.GlobalBasis * LeftTargetRotation.Inverse();
+        _LeftHandRB.GlobalPosition = _GrabbableRB.GlobalPosition - (_LeftHandRB.GlobalBasis * LeftTargetPosition);
         _LeftHandRB.LinearVelocity = Vector3.Zero; //if we don't do this, the hand doesn't know it's being held back
         _LeftHandRB.AngularVelocity = Vector3.Zero;
 
-        _RightHandRB.GlobalBasis = _GrabbableRB.GlobalBasis * _RightTargetRotation.Inverse();
-        _RightHandRB.GlobalPosition = _GrabbableRB.GlobalPosition - (_RightHandRB.GlobalBasis * _RightTargetPosition);
+        _RightHandRB.GlobalBasis = _GrabbableRB.GlobalBasis * RightTargetRotation.Inverse();
+        _RightHandRB.GlobalPosition = _GrabbableRB.GlobalPosition - (_RightHandRB.GlobalBasis * RightTargetPosition);
         _RightHandRB.LinearVelocity = Vector3.Zero; //if we don't do this, the hand doesn't know it's being held back
         _RightHandRB.AngularVelocity = Vector3.Zero;
     }
@@ -61,8 +61,8 @@ public partial class TwoHandedGrabbableJoint : Node
 
         //the bodies are effectively fused right now. as such, position them together, moving them
         //inversely proportional to their masses
-        Vector3 lGrabbableDesiredPos = _LeftHandRB.GlobalPosition + (_LeftHandRB.GlobalBasis * _LeftTargetPosition);
-        Vector3 rGrabbableDesiredPos = _RightHandRB.GlobalPosition + (_RightHandRB.GlobalBasis * _RightTargetPosition);
+        Vector3 lGrabbableDesiredPos = _LeftHandRB.GlobalPosition + (_LeftHandRB.GlobalBasis * LeftTargetPosition);
+        Vector3 rGrabbableDesiredPos = _RightHandRB.GlobalPosition + (_RightHandRB.GlobalBasis * RightTargetPosition);
         float lWeighting = _LeftHandRB.Mass / (_LeftHandRB.Mass + _RightHandRB.Mass + _GrabbableRB.Mass);
         float rWeighting = _RightHandRB.Mass / (_LeftHandRB.Mass + _RightHandRB.Mass + _GrabbableRB.Mass);
         Vector3 lTargetPos = _GrabbableRB.GlobalPosition.Lerp(lGrabbableDesiredPos, lWeighting);
@@ -72,8 +72,8 @@ public partial class TwoHandedGrabbableJoint : Node
         Vector3 targetPos = lTargetPos.Lerp(rTargetPos, rHandWeight);
 
         _GrabbableRB.MoveAndCollide(targetPos - _GrabbableRB.GlobalPosition);
-        _LeftHandRB.GlobalPosition = _GrabbableRB.GlobalPosition - (_LeftHandRB.GlobalBasis * _LeftTargetPosition);
-        _RightHandRB.GlobalPosition = _GrabbableRB.GlobalPosition - (_RightHandRB.GlobalBasis * _RightTargetPosition);
+        _LeftHandRB.GlobalPosition = _GrabbableRB.GlobalPosition - (_LeftHandRB.GlobalBasis * LeftTargetPosition);
+        _RightHandRB.GlobalPosition = _GrabbableRB.GlobalPosition - (_RightHandRB.GlobalBasis * RightTargetPosition);
 
         //TODO calculate how the individual torques applied by the hands would move the body linearly
 
@@ -82,8 +82,8 @@ public partial class TwoHandedGrabbableJoint : Node
         //Quaternion rRot = (_RightHandRB.GlobalBasis * _RightTargetRotation).GetRotationQuaternion();
         //Quaternion lerpedRot = lRot.Slerp(rRot, 0.5f);
         //_GrabbableRB.GlobalBasis = new Basis(lerpedRot);
-        _LeftHandRB.GlobalBasis = _GrabbableRB.GlobalBasis * _LeftTargetRotation.Inverse();
-        _RightHandRB.GlobalBasis = _GrabbableRB.GlobalBasis * _RightTargetRotation.Inverse();
+        _LeftHandRB.GlobalBasis = _GrabbableRB.GlobalBasis * LeftTargetRotation.Inverse();
+        _RightHandRB.GlobalBasis = _GrabbableRB.GlobalBasis * RightTargetRotation.Inverse();
 
 
         //now that we've applied our rotations, recalculate the inertia tensors

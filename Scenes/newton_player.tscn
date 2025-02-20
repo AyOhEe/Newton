@@ -248,8 +248,12 @@ _BodySolver = NodePath("../../BodySolver")
 _CameraRig = NodePath("../../CameraRig")
 _RigBodies = [NodePath("../Fender"), NodePath("../Core"), NodePath("../Locosphere"), NodePath("../LeftArm"), NodePath("../LeftForearm"), NodePath("../RightArm"), NodePath("../RightForearm"), NodePath("../LeftHand"), NodePath("../RightHand")]
 
-[node name="GrabCoordinator" type="Node" parent="PhysicsRig"]
+[node name="GrabCoordinator" type="Node" parent="PhysicsRig" node_paths=PackedStringArray("_CameraRig", "_BodySolver", "_LeftHand", "_RightHand")]
 script = ExtResource("6_58baa")
+_CameraRig = NodePath("../../CameraRig")
+_BodySolver = NodePath("../../BodySolver")
+_LeftHand = NodePath("../LeftHand")
+_RightHand = NodePath("../RightHand")
 
 [node name="Fender" type="RigidBody3D" parent="PhysicsRig"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -582,11 +586,9 @@ CoreRB = NodePath("../..")
 ChestMount = NodePath("../../ChestMount")
 ShoulderJointController = NodePath("..")
 
-[node name="LHandCoreJoint" type="Node" parent="PhysicsRig/Core" node_paths=PackedStringArray("_CameraRig", "_BodySolver", "_GrabCoordinator", "_HandRB", "_CoreRB")]
+[node name="LHandCoreJoint" type="Node" parent="PhysicsRig/Core" node_paths=PackedStringArray("_GrabCoordinator", "_HandRB", "_CoreRB")]
 script = ExtResource("9_gue12")
 _IsLeftHanded = true
-_CameraRig = NodePath("../../../CameraRig")
-_BodySolver = NodePath("../../../BodySolver")
 _GrabCoordinator = NodePath("../../GrabCoordinator")
 _HandRB = NodePath("../../LeftHand")
 _CoreRB = NodePath("..")
@@ -595,10 +597,8 @@ _MaxImpulsePerSecond = 175.0
 _AngularApproachTime = 0.025
 _MaxTorque = 30.0
 
-[node name="RHandCoreJoint" type="Node" parent="PhysicsRig/Core" node_paths=PackedStringArray("_CameraRig", "_BodySolver", "_GrabCoordinator", "_HandRB", "_CoreRB")]
+[node name="RHandCoreJoint" type="Node" parent="PhysicsRig/Core" node_paths=PackedStringArray("_GrabCoordinator", "_HandRB", "_CoreRB")]
 script = ExtResource("9_gue12")
-_CameraRig = NodePath("../../../CameraRig")
-_BodySolver = NodePath("../../../BodySolver")
 _GrabCoordinator = NodePath("../../GrabCoordinator")
 _HandRB = NodePath("../../RightHand")
 _CoreRB = NodePath("..")
