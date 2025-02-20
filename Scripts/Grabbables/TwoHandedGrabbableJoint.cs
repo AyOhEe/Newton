@@ -75,12 +75,13 @@ public partial class TwoHandedGrabbableJoint : Node
         _LeftHandRB.GlobalPosition = _GrabbableRB.GlobalPosition - (_LeftHandRB.GlobalBasis * _LeftTargetPosition);
         _RightHandRB.GlobalPosition = _GrabbableRB.GlobalPosition - (_RightHandRB.GlobalBasis * _RightTargetPosition);
 
+        //TODO calculate how the individual torques applied by the hands would move the body linearly
 
         //TODO basis should be set proportional to the inertia of the objects in question
-        Quaternion lRot = (_LeftHandRB.GlobalBasis * _LeftTargetRotation).GetRotationQuaternion();
-        Quaternion rRot = (_RightHandRB.GlobalBasis * _RightTargetRotation).GetRotationQuaternion();
-        Quaternion lerpedRot = lRot.Slerp(rRot, 0.5f);
-        _GrabbableRB.GlobalBasis = new Basis(lerpedRot);
+        //Quaternion lRot = (_LeftHandRB.GlobalBasis * _LeftTargetRotation).GetRotationQuaternion();
+        //Quaternion rRot = (_RightHandRB.GlobalBasis * _RightTargetRotation).GetRotationQuaternion();
+        //Quaternion lerpedRot = lRot.Slerp(rRot, 0.5f);
+        //_GrabbableRB.GlobalBasis = new Basis(lerpedRot);
         _LeftHandRB.GlobalBasis = _GrabbableRB.GlobalBasis * _LeftTargetRotation.Inverse();
         _RightHandRB.GlobalBasis = _GrabbableRB.GlobalBasis * _RightTargetRotation.Inverse();
 

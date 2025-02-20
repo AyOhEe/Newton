@@ -7,6 +7,7 @@ public partial class GrabCoordinator : Node
 	private GrabbableJoint _LeftHandJoint;
 	private GrabbableJoint _RightHandJoint;
 	private TwoHandedGrabbableJoint _THJoint;
+
 	private Transform3D _LeftHandPose;
 	private Transform3D _RightHandPose;
 
