@@ -14,6 +14,7 @@ public partial class HandCoreJoint : Node
     [ExportCategory("Linear motion settings")]
 	[Export] private float _LinearApproachTime = 0.02f;
     [Export] private float _MaxImpulsePerSecond = 10;
+	[Export] private float _MomentumDumpImpulsePerSecond = 10;
 
 
 	[ExportCategory("Angular motion settings")]
@@ -39,15 +40,27 @@ public partial class HandCoreJoint : Node
 
         HandleLinearMotion(wristTransform, delta);
         HandleAngularMotion(wristTransform, delta);
+
+		DumpCoreMomentum(delta);
     }
 
-	private void HandleLinearMotion(Transform3D wristTransform, double delta)
+    private void DumpCoreMomentum(double delta)
+    {
+		Vector3 deltaI = (_CoreRB.LinearVelocity * _CoreRB.Mass) - (_HandRB.LinearVelocity * _HandRB.Mass);
+		deltaI = deltaI.LimitLength(_MomentumDumpImpulsePerSecond * (float)delta);
+
+		_HandRB.LinearVelocity += deltaI / _HandRB.Mass;
+		_CoreRB.LinearVelocity -= deltaI / _CoreRB.Mass;
+    }
+
+    private void HandleLinearMotion(Transform3D wristTransform, double delta)
 	{
         //calculate hand momentum and desired hand momentum
+        GD.Print((_IsLeftHanded ? "Left" : "Right") + ": LV " + _HandRB.LinearVelocity.ToString());
         Vector3 momentum = _HandRB.LinearVelocity * _HandRB.Mass 
-	   + (_HandIsHolding ? _HandHeldObject.LinearVelocity * _HandHeldObject.Mass : Vector3.Zero);
+	   + (_HandIsHolding ? _HandHeldObject.LinearVelocity * additionalMass() : Vector3.Zero);
 
-		float totalMass = _HandRB.Mass + (_HandIsHolding ? _HandHeldObject.Mass : 0);
+		float totalMass = _HandRB.Mass + additionalMass();
         Vector3 desiredMomentum = CalculateDesiredHandVel(wristTransform.Origin) * totalMass;
 
         //calculate the required impulse to achieve this velocity, clamped to the maximum
@@ -66,6 +79,11 @@ public partial class HandCoreJoint : Node
 		{
 			GD.PrintErr("HandCoreJoint calculated infinite deltaV");
 		}
+    }
+
+	private float additionalMass()
+	{
+		return (_HandIsHolding && (!_HandHeldObject.Freeze)) ? _HandHeldObject.Mass : 0;
     }
 
 	private Vector3 CalculateDesiredHandVel(Vector3 wristPos)
