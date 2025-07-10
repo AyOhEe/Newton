@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://ce62gcmm1n4dy"]
 
-[ext_resource type="Script" path="res://addons/Newton/Scripts/Grabbables/CylinderGrabbable.cs" id="1_dkyqy"]
+[ext_resource type="Script" uid="uid://bsp67fockq7ry" path="res://addons/Newton/Scripts/Grabbables/CylinderGrabbable.cs" id="1_dkyqy"]
 [ext_resource type="PackedScene" uid="uid://ta178svgkj7b" path="res://addons/Godot-Extras/Axis Helper/Axis Helper.tscn" id="2_lxyj5"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_vyn5y"]

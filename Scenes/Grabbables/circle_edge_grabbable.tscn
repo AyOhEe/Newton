@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://o1ier6urg6ck"]
 
-[ext_resource type="Script" path="res://addons/Newton/Scripts/Grabbables/CircleEdgeGrabbable.cs" id="1_x7pc7"]
+[ext_resource type="Script" uid="uid://bfqwmmscdrfr0" path="res://addons/Newton/Scripts/Grabbables/CircleEdgeGrabbable.cs" id="1_x7pc7"]
 [ext_resource type="PackedScene" uid="uid://ta178svgkj7b" path="res://addons/Godot-Extras/Axis Helper/Axis Helper.tscn" id="2_tr8f1"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_qq21g"]

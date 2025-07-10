@@ -5,30 +5,30 @@
 [ext_resource type="PackedScene" uid="uid://cc233hyhx6yy0" path="res://addons/Newton/Models/Hand Mesh/LeftHandHumanoid.gltf" id="2_oi8rg"]
 [ext_resource type="PackedScene" uid="uid://driyq86kih6j7" path="res://addons/Newton/Models/Hand Mesh/RightHandHumanoid.gltf" id="3_37dol"]
 [ext_resource type="PackedScene" uid="uid://bo3f3lg1xqgqb" path="res://addons/Godot-VR-Body-Solver/Scenes/PreparedBodySolver.tscn" id="3_gfmwf"]
-[ext_resource type="Script" path="res://addons/Newton/Scripts/Player/Turning.cs" id="3_xhkru"]
-[ext_resource type="Script" path="res://addons/Newton/Scripts/Player/LegsJoint.cs" id="4_7bptw"]
-[ext_resource type="Script" path="res://addons/Newton/Scripts/Player/CoreRB.cs" id="4_jlr6y"]
-[ext_resource type="Script" path="res://addons/Newton/Scripts/Player/LocosphereMovement.cs" id="4_w6sr6"]
-[ext_resource type="Script" path="res://addons/Newton/Scripts/Player/MoveWithChest.cs" id="6_0bglg"]
-[ext_resource type="Script" path="res://addons/Newton/Scripts/IgnoreCollisionList.cs" id="6_5laxh"]
-[ext_resource type="Script" path="res://addons/Newton/Scripts/Grabbables/GrabCoordinator.cs" id="6_58baa"]
-[ext_resource type="Script" path="res://addons/Newton/Scripts/Player/HeadCollider.cs" id="9_e4qeh"]
-[ext_resource type="Script" path="res://addons/Newton/Scripts/Player/HandCoreJoint.cs" id="9_gue12"]
-[ext_resource type="Script" path="res://addons/Newton/Scripts/Player/ShrinkMidair.cs" id="9_lgv21"]
-[ext_resource type="Script" path="res://addons/Newton/Scripts/IgnoreCollision.cs" id="10_avgum"]
+[ext_resource type="Script" uid="uid://c1ojj4vwby21u" path="res://addons/Newton/Scripts/Player/Turning.cs" id="3_xhkru"]
+[ext_resource type="Script" uid="uid://cvgb5s6btxnbt" path="res://addons/Newton/Scripts/Player/LegsJoint.cs" id="4_7bptw"]
+[ext_resource type="Script" uid="uid://c6fsynir6lpfa" path="res://addons/Newton/Scripts/Player/CoreRB.cs" id="4_jlr6y"]
+[ext_resource type="Script" uid="uid://i7txktmtpioc" path="res://addons/Newton/Scripts/Player/LocosphereMovement.cs" id="4_w6sr6"]
+[ext_resource type="Script" uid="uid://duclmrsyqbwj3" path="res://addons/Newton/Scripts/Player/MoveWithChest.cs" id="6_0bglg"]
+[ext_resource type="Script" uid="uid://bejfauwfyjkun" path="res://addons/Newton/Scripts/IgnoreCollisionList.cs" id="6_5laxh"]
+[ext_resource type="Script" uid="uid://dr0j4j2pxi21r" path="res://addons/Newton/Scripts/Grabbables/GrabCoordinator.cs" id="6_58baa"]
+[ext_resource type="Script" uid="uid://by8qaeylaydku" path="res://addons/Newton/Scripts/Player/HeadCollider.cs" id="9_e4qeh"]
+[ext_resource type="Script" uid="uid://bndbepi8mwech" path="res://addons/Newton/Scripts/Player/HandCoreJoint.cs" id="9_gue12"]
+[ext_resource type="Script" uid="uid://dch8a4whfsjct" path="res://addons/Newton/Scripts/Player/ShrinkMidair.cs" id="9_lgv21"]
+[ext_resource type="Script" uid="uid://blf2kti73g4g2" path="res://addons/Newton/Scripts/IgnoreCollision.cs" id="10_avgum"]
 [ext_resource type="PackedScene" uid="uid://ta178svgkj7b" path="res://addons/Godot-Extras/Axis Helper/Axis Helper.tscn" id="10_pt675"]
-[ext_resource type="Script" path="res://addons/Newton/Scripts/Player/RescaleArmSegment.cs" id="11_0yyws"]
-[ext_resource type="Script" path="res://addons/Newton/Scripts/Grabbables/PhysbodyHand.cs" id="11_bonw1"]
-[ext_resource type="Script" path="res://addons/Newton/Scripts/Player/PinJointController.cs" id="11_qjhrs"]
-[ext_resource type="Script" path="res://addons/Newton/Scripts/Player/MatchArmRotation.cs" id="11_qrf5w"]
-[ext_resource type="Script" path="res://addons/Newton/Scripts/Player/ShoulderJointPositioning.cs" id="17_wfi3c"]
-[ext_resource type="Script" path="res://addons/Newton/Scripts/Player/MountedCapsuleCollider.cs" id="18_iowrs"]
+[ext_resource type="Script" uid="uid://bvlj46n7tjiqx" path="res://addons/Newton/Scripts/Player/RescaleArmSegment.cs" id="11_0yyws"]
+[ext_resource type="Script" uid="uid://bwwfaopkxrrt1" path="res://addons/Newton/Scripts/Grabbables/PhysbodyHand.cs" id="11_bonw1"]
+[ext_resource type="Script" uid="uid://couto22jd23a8" path="res://addons/Newton/Scripts/Player/PinJointController.cs" id="11_qjhrs"]
+[ext_resource type="Script" uid="uid://ccqnhdgvfdeip" path="res://addons/Newton/Scripts/Player/MatchArmRotation.cs" id="11_qrf5w"]
+[ext_resource type="Script" uid="uid://c7p4f67p2jjoq" path="res://addons/Newton/Scripts/Player/ShoulderJointPositioning.cs" id="17_wfi3c"]
+[ext_resource type="Script" uid="uid://d2m06etre5y52" path="res://addons/Newton/Scripts/Player/MountedCapsuleCollider.cs" id="18_iowrs"]
 [ext_resource type="PackedScene" uid="uid://c5cs4wxvw3dsv" path="res://addons/Newton/Models/Avatars/Crash Dummy/crash_dummy_RIGGED.glb" id="22_camjs"]
-[ext_resource type="Script" path="res://addons/Newton/Scripts/BodyMesh/BodyMesh.cs" id="23_awjlb"]
-[ext_resource type="Script" path="res://addons/Newton/Scripts/BodyMesh/ChestBoneParent.cs" id="24_744ie"]
-[ext_resource type="Script" path="res://addons/Newton/Scripts/BodyMesh/ForceUpdateBoneAttachment3D.cs" id="24_s6vtw"]
-[ext_resource type="Script" path="res://addons/Newton/Scripts/BodyMesh/ArmSegmentBoneParent.cs" id="25_qpbvd"]
-[ext_resource type="Script" path="res://addons/Newton/Scripts/BodyMesh/HeadBoneParent.cs" id="25_w8ex7"]
+[ext_resource type="Script" uid="uid://cunbvlk3jid0k" path="res://addons/Newton/Scripts/BodyMesh/BodyMesh.cs" id="23_awjlb"]
+[ext_resource type="Script" uid="uid://bhdhnc6p6f60b" path="res://addons/Newton/Scripts/BodyMesh/ChestBoneParent.cs" id="24_744ie"]
+[ext_resource type="Script" uid="uid://ckudnb4tdrevd" path="res://addons/Newton/Scripts/BodyMesh/ForceUpdateBoneAttachment3D.cs" id="24_s6vtw"]
+[ext_resource type="Script" uid="uid://cmdsxnqb7oayf" path="res://addons/Newton/Scripts/BodyMesh/ArmSegmentBoneParent.cs" id="25_qpbvd"]
+[ext_resource type="Script" uid="uid://b2s3gy2l8lh6s" path="res://addons/Newton/Scripts/BodyMesh/HeadBoneParent.cs" id="25_w8ex7"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_7mq57"]
 resource_local_to_scene = true
@@ -283,7 +283,6 @@ wait_time = 0.1
 autostart = true
 
 [node name="FenderMesh" type="MeshInstance3D" parent="PhysicsRig/Fender/FenderCollision"]
-visible = false
 mesh = SubResource("SphereMesh_jj4w0")
 skeleton = NodePath("../..")
 
@@ -346,7 +345,6 @@ wait_time = 0.1
 autostart = true
 
 [node name="LocosphereMesh" type="MeshInstance3D" parent="PhysicsRig/Locosphere/LocosphereCollision"]
-visible = false
 mesh = SubResource("SphereMesh_28osh")
 skeleton = NodePath("../..")
 
@@ -684,8 +682,8 @@ bones/3/scale = Vector3(0.999999, 1, 1)
 bones/4/position = Vector3(5.96046e-08, 0.379091, -1.93715e-07)
 bones/4/rotation = Quaternion(-0.51846, -2.72444e-08, 0.0292985, 0.8546)
 bones/4/scale = Vector3(0.999999, 1, 0.999998)
-bones/5/position = Vector3(0.00157057, 0.154008, 0.000411764)
-bones/5/rotation = Quaternion(-0.306193, -0.0181829, -0.00585183, 0.951778)
+bones/5/position = Vector3(0.00157063, 0.154008, 0.000412475)
+bones/5/rotation = Quaternion(-0.306193, -0.0181829, -0.00585181, 0.951778)
 bones/5/scale = Vector3(0.999998, 1, 0.999998)
 bones/6/position = Vector3(0.0814057, 0.029575, -1.21702e-07)
 bones/6/rotation = Quaternion(0.00400118, 0.0221394, 0.997912, -0.060547)
@@ -696,7 +694,7 @@ bones/7/scale = Vector3(1, 1, 1)
 bones/8/position = Vector3(-8.9407e-08, 0.379091, -5.96046e-08)
 bones/8/rotation = Quaternion(-0.517546, 0.0435175, -0.0424843, 0.853491)
 bones/8/scale = Vector3(1, 1, 0.999998)
-bones/9/position = Vector3(-0.00202805, 0.154253, 0.000543065)
+bones/9/position = Vector3(-0.00202821, 0.154254, 0.000543933)
 bones/9/rotation = Quaternion(-0.306193, -0.0181783, -0.00584571, 0.951778)
 bones/9/scale = Vector3(0.999999, 1, 0.999998)
 bones/10/position = Vector3(2.48483e-14, 0.123544, -7.07805e-08)
