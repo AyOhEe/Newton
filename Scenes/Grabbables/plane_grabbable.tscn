@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://bedwkal2e0vis"]
 
-[ext_resource type="Script" path="res://addons/Newton/Scripts/Grabbables/PlaneGrabbable.cs" id="1_e6wjh"]
+[ext_resource type="Script" uid="uid://b4in0p6r27ekv" path="res://addons/Newton/Scripts/Grabbables/PlaneGrabbable.cs" id="1_e6wjh"]
 [ext_resource type="PackedScene" uid="uid://ta178svgkj7b" path="res://addons/Godot-Extras/Axis Helper/Axis Helper.tscn" id="2_53hqn"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ya1vw"]
