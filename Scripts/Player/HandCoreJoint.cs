@@ -56,7 +56,7 @@ public partial class HandCoreJoint : Node
     private void HandleLinearMotion(Transform3D wristTransform, double delta)
 	{
         //calculate hand momentum and desired hand momentum
-        GD.Print((_IsLeftHanded ? "Left" : "Right") + ": LV " + _HandRB.LinearVelocity.ToString());
+        //GD.Print((_IsLeftHanded ? "Left" : "Right") + ": LV " + _HandRB.LinearVelocity.ToString());
         Vector3 momentum = _HandRB.LinearVelocity * _HandRB.Mass 
 	   + (_HandIsHolding ? _HandHeldObject.LinearVelocity * additionalMass() : Vector3.Zero);
 
