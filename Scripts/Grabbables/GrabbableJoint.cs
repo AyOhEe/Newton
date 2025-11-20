@@ -4,20 +4,24 @@ using System;
 public partial class GrabbableJoint : Node3D
 {
 	public PhysbodyHand _HandRB { get; private set; }
-	public RigidBody3D _GrabbableRB { get; private set; }
+    public RigidBody3D _ForearmRB { get; private set; }
+    public RigidBody3D _GrabbableRB { get; private set; }
     public Vector3 TargetPosition;
 	public Basis TargetRotation;
 
-    public GrabbableJoint(PhysbodyHand hand, RigidBody3D grabbable)
+    public GrabbableJoint(PhysbodyHand hand, RigidBody3D forearm, RigidBody3D grabbable)
 	{
 		_HandRB = hand;
+        _ForearmRB = forearm;
 		_GrabbableRB = grabbable;
-		_HandRB.AddCollisionExceptionWith(_GrabbableRB);
-	}
+        _GrabbableRB.AddCollisionExceptionWith(_HandRB);
+        _GrabbableRB.AddCollisionExceptionWith(_ForearmRB);
+    }
 	public void HandleDestruction()
-	{
-		_HandRB.RemoveCollisionExceptionWith(_GrabbableRB);
-	}
+    {
+        _GrabbableRB.RemoveCollisionExceptionWith(_HandRB);
+        _GrabbableRB.RemoveCollisionExceptionWith(_ForearmRB);
+    }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _PhysicsProcess(double delta)
