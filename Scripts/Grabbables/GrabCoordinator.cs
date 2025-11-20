@@ -17,7 +17,7 @@ public partial class GrabCoordinator : Node
 	private Transform3D _LeftHandPose;
 	private Transform3D _RightHandPose;
 
-	public void CreateJoint(Grabbable target, PhysbodyHand hand, Transform3D parentspacePose)
+	public void CreateJoint(Grabbable target, PhysbodyHand hand, RigidBody3D forearm, Transform3D parentspacePose)
 	{
         RigidBody3D leftHandTarget = _LeftHandJoint?._GrabbableRB;
         RigidBody3D rightHandTarget = _RightHandJoint?._GrabbableRB;
@@ -36,16 +36,16 @@ public partial class GrabCoordinator : Node
         //two one handed joints would not (and DO not) behave correctly
         if(leftHandTarget == rightHandTarget)
         {
-            CreateTwoHandedJoint(target, hand, parentspacePose);
+            CreateTwoHandedJoint(target, hand, forearm, parentspacePose);
         }
         else
         {
-            CreateOneHandedJoint(target, hand, parentspacePose);
+            CreateOneHandedJoint(target, hand, forearm, parentspacePose);
         }
     }
 
     //handles creating a joint for one handed grabbing
-	private void CreateOneHandedJoint(Grabbable target, PhysbodyHand hand, Transform3D parentspacePose)
+	private void CreateOneHandedJoint(Grabbable target, PhysbodyHand hand, RigidBody3D forearm, Transform3D parentspacePose)
 	{
         if (hand.IsLeftHanded)
         {
@@ -54,7 +54,7 @@ public partial class GrabCoordinator : Node
                 GD.PushError("Attempting to grab while joint exists!");
                 return;
             }
-            _LeftHandJoint = _CreateOneHandedJoint(target, hand, parentspacePose);
+            _LeftHandJoint = _CreateOneHandedJoint(target, hand, forearm, parentspacePose);
             _LeftHandPose = parentspacePose;
         }
         else
@@ -64,14 +64,14 @@ public partial class GrabCoordinator : Node
                 GD.PushError("Attempting to grab while joint exists!");
                 return;
             }
-            _RightHandJoint = _CreateOneHandedJoint(target, hand, parentspacePose);
+            _RightHandJoint = _CreateOneHandedJoint(target, hand, forearm, parentspacePose);
             _RightHandPose = parentspacePose;
         }
     }
 	//creates a joint for one handed grabbing
-	private GrabbableJoint _CreateOneHandedJoint(Grabbable target, PhysbodyHand hand, Transform3D parentspacePose)
+	private GrabbableJoint _CreateOneHandedJoint(Grabbable target, PhysbodyHand hand, RigidBody3D forearm, Transform3D parentspacePose)
 	{
-		GrabbableJoint joint = new GrabbableJoint(hand, target.ParentRigidBody);
+		GrabbableJoint joint = new GrabbableJoint(hand, forearm, target.ParentRigidBody);
 
         joint.TargetRotation = hand.PalmGrabPoint.Basis * parentspacePose.Basis.Inverse();
         joint.TargetPosition = hand.PalmGrabPoint.Position + (joint.TargetRotation * -parentspacePose.Origin);
@@ -81,7 +81,7 @@ public partial class GrabCoordinator : Node
     }
 
     //handles creating a joint for two handed grabbing
-    private void CreateTwoHandedJoint(Grabbable target, PhysbodyHand hand, Transform3D parentspacePose)
+    private void CreateTwoHandedJoint(Grabbable target, PhysbodyHand hand, RigidBody3D forearm, Transform3D parentspacePose)
     {
         //create the onehanded joint for the new hand, but remove it from the scene tree.
         //we want this to exist so we can use it later if the other hand releases first.
@@ -89,12 +89,12 @@ public partial class GrabCoordinator : Node
         //to think about that.
         if (hand.IsLeftHanded)
         {
-            _LeftHandJoint = _CreateOneHandedJoint(target, hand, parentspacePose);
+            _LeftHandJoint = _CreateOneHandedJoint(target, hand, forearm, parentspacePose);
             _LeftHandPose = parentspacePose; 
         }
         else
         {
-            _RightHandJoint = _CreateOneHandedJoint(target, hand, parentspacePose);
+            _RightHandJoint = _CreateOneHandedJoint(target, hand, forearm, parentspacePose);
             _RightHandPose = parentspacePose;
         }
 

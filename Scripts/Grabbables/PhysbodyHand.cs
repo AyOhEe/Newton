@@ -13,6 +13,7 @@ public partial class PhysbodyHand : RigidBody3D
     [Export] public bool IsLeftHanded { get; private set; }
     [Export] public float poseAngleCost { get; private set; }
     [Export] public Node3D PalmGrabPoint { get; private set; }
+    [Export] public RigidBody3D ForearmRB { get; private set; }
     [Export] private GrabCoordinator _GrabCoordinator;
 
 
@@ -107,7 +108,7 @@ public partial class PhysbodyHand : RigidBody3D
         _HeldGrabbable.SetToolSecondary(0);
 
         //tell the coordinator to create the joint
-        _GrabCoordinator.CreateJoint(_HeldGrabbable, this, parentspacePose);
+        _GrabCoordinator.CreateJoint(_HeldGrabbable, this, ForearmRB, parentspacePose);
     }
     private float CalculatePoseCost(Transform3D nearestPose)
     {
